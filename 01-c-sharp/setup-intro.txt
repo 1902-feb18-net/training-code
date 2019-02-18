@@ -5,3 +5,17 @@ tools:
     git for windows (+ git bash)
         installs linux-like bash environment (terminal)
         also installs git, for version control
+bash commands:
+    ls
+        see contents of current directory
+    cd
+        change directory
+    mkdir
+        make new directory
+git commands:
+    git status
+        see current status of current repository
+    git pull
+        get latest changes pushed by others
+    git clone
+        make new local copy of a repository from GitHub
