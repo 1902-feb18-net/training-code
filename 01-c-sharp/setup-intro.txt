@@ -16,6 +16,10 @@ bash commands:
         change directory
     mkdir
         make new directory
+    (tab completion)
+        auto-complete directory/file names
+    (up/down arrow)
+        bash history, see and re-run previous commands
 git commands:
     git status
         see current status of current repository
@@ -23,3 +27,19 @@ git commands:
         get latest changes pushed by others
     git clone
         make new local copy of a repository from GitHub
+dotnet commands:
+    dotnet new
+        generate a new .net project from a variety of templates, e.g. "console"
+        run "dotnet new console" in a empty directory, or,
+        run "dotnet new console -n name-of-project" to create that project
+        directory in the same step.
+    steps to build & run code:
+    1. dotnet restore
+        download/update all code dependencies
+    2. dotnet build
+        compile the code (to CIL in a DLL/EXE)
+    3. dotnet run
+        run the compiled code (in the DLL/EXE)
+vs code settings for windows:
+    "git.path": "C:\\Program Files\\Git\\bin\\git.exe",
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
