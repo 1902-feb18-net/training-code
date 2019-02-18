@@ -1,0 +1,7 @@
+tools:
+    visual studio
+        (only .net core workload required)
+    visual studio code
+    git for windows (+ git bash)
+        installs linux-like bash environment (terminal)
+        also installs git, for version control
