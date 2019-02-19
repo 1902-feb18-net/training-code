@@ -8,18 +8,23 @@ namespace Animals.Library
         internal string Noise = "Woof!";
 
         // getter
-        public string getNoise()
+        public string GetNoise()
         {
             return Noise + "!";
         }
 
         // setter
-        public void setNoise(string newValue)
+        public void SetNoise(string newValue)
         {
-            if (newValue == null || newValue.Length == 0)
+            if (newValue == null)
             {
                 // throwing an exception
-                throw new ArgumentException("value must not be null or empty");
+                throw new ArgumentNullException("newValue");
+            }
+            if (newValue.Length == 0)
+            {
+                // throwing an exception
+                throw new ArgumentException("value must not be empty", "newValue");
             }
             Noise = newValue;
         }
