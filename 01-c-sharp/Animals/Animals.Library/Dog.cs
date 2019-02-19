@@ -1,14 +1,14 @@
 using System;
 
-namespace Animals.UI
+namespace Animals.Library
 {
-    internal class Dog
+    public class Dog
     {
         // field
         internal string Noise = "Woof!";
 
         // methods
-        internal void GoTo(string location)
+        public void GoTo(string location)
         {
             // simple way to put a string together
             // Console.WriteLine("Walking to " + location);
@@ -18,7 +18,7 @@ namespace Animals.UI
             Console.WriteLine($"Walking to {location}");
         }
 
-        internal void MakeNoise()
+        public void MakeNoise()
         {
             Console.WriteLine(Noise);
         }
