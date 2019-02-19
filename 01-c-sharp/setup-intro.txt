@@ -27,6 +27,21 @@ git commands:
         get latest changes pushed by others
     git clone
         make new local copy of a repository from GitHub
+        in a new subdirectory of the current directory.
+        then, cd into it to begin running git commands in its context.
+    git add
+        give this command paths as arguments to stage those changes in the
+        index, to be committed. give it "." to add every change under the
+        current directory.
+    git reset
+        this commands can do several things, among them, unstage changes from
+        the index.
+    git commit
+        this records all changes in the index as a permanent "commit" in the
+        repo's history. use "-m" option to add a message in-line.
+    git push
+        this uploads commits on the current branch to the configured remote
+        repo (often, GitHub).
 dotnet commands:
     dotnet new
         generate a new .net project from a variety of templates, e.g. "console"
@@ -43,3 +58,6 @@ dotnet commands:
 vs code settings for windows:
     "git.path": "C:\\Program Files\\Git\\bin\\git.exe",
     "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\bin\\bash.exe",
+nano shortcuts:
+    Ctrl-O (+enter): save
+    Ctrl+X: exit
