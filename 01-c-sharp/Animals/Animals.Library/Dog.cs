@@ -7,6 +7,57 @@ namespace Animals.Library
         // field
         internal string Noise = "Woof!";
 
+        // getter
+        public string getNoise()
+        {
+            return Noise + "!";
+        }
+
+        // setter
+        public void setNoise(string newValue)
+        {
+            if (newValue == null || newValue.Length == 0)
+            {
+                // throwing an exception
+                throw new ArgumentException("value must not be null or empty");
+            }
+            Noise = newValue;
+        }
+
+        // instead of using getters and setters,
+        // in C# we have properties where other languages would just
+        // use fields on their own.
+
+        // simplest property is "auto-implemented" property.
+        // a field is generated behind the
+        // scenes to back this property
+        // usually properties have some "backing field".
+        public int Id { get; set; } = 0;
+        // this here is manual version of
+        // auto-property.
+        private string _name;
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                // inside "set"
+                // we have implicit argument "value"
+                // could do null/empty-checks, etc.
+                _name = value;
+            }
+        }
+        // property syntax provides getters and setters pretending
+        // to be a field
+
+        // we can have properties without set
+        // (readonly)
+        public string Color { get; } = "brown";
+        public string Breed { get; set; }
+
         // methods
         public void GoTo(string location)
         {

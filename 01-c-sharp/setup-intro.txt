@@ -42,6 +42,10 @@ git commands:
     git push
         this uploads commits on the current branch to the configured remote
         repo (often, GitHub).
+    HEAD
+        means current commit
+    ^
+        (caret) means parent of something.
 dotnet commands:
     dotnet new
         generate a new .net project from a variety of templates, e.g. "console"
