@@ -65,8 +65,12 @@ namespace MoreAnimals.UI
             {
                 Console.WriteLine(item.Name);
                 item.MakeNoise();
-                item.GoTo("park"); // here, we can't see Eagle.GoTo, which only hides ABird.GoTo
+                item.GoTo("park"); // here, when we weren't using vrtiaul/override,
+                                   // we can't see Eagle.GoTo, which only hides ABird.GoTo
                                    // without truly overriding it.
+
+                // once we use virtual/override, it really does replace the method implementation
+                // on the object itself
             }
 
             Eagle eagle1 = (Eagle)animals[1];

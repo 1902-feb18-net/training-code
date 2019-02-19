@@ -18,7 +18,9 @@ namespace MoreAnimals.Library
         public int AnimalId { get; set; }
         public string Name { get; set; }
 
-        public void GoTo(string location)
+        // virtual is an extended modifier
+        // meaning "opt-in to derived classes being allowed to override it"
+        public virtual void GoTo(string location)
         {
             Console.WriteLine($"Flying to {location.ToLower()}");
         }
