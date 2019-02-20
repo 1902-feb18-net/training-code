@@ -12,6 +12,10 @@ namespace Collection
             Lists();
             Sets();
             StringEquality();
+
+            // couple other collections:
+            new Stack<int>(); // last-in, first-out
+            new Queue<int>(); // first-in, first-out
         }
 
         static void Arrays()
