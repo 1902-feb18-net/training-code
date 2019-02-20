@@ -1,20 +1,20 @@
 ﻿using System;
 
-namespace MemoryList.Library
+namespace ML.Library
 {
-    public class MemoryList
+    public class MemoryList<T>
     {
-        public void Add()
+        public void Add(T value)
         {
             throw new NotImplementedException();
         }
 
-        public void Remove()
+        public void Remove(T value)
         {
             throw new NotImplementedException();
         }
 
-        public void Contains()
+        public bool Contains(T value)
         {
             throw new NotImplementedException();
         }

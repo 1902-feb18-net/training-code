@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryList.Library", "MemoryList.Library\MemoryList.Library.csproj", "{7F2C5F7E-B34C-4942-A6C0-419126282ADA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryList.Tests", "MemoryList.Tests\MemoryList.Tests.csproj", "{D3F88CBE-EB96-4A71-B8BD-73BE3C617FCC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{7F2C5F7E-B34C-4942-A6C0-419126282ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F2C5F7E-B34C-4942-A6C0-419126282ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F2C5F7E-B34C-4942-A6C0-419126282ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F88CBE-EB96-4A71-B8BD-73BE3C617FCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F88CBE-EB96-4A71-B8BD-73BE3C617FCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F88CBE-EB96-4A71-B8BD-73BE3C617FCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F88CBE-EB96-4A71-B8BD-73BE3C617FCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
