@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace SerializationAndAsync
@@ -47,6 +48,10 @@ namespace SerializationAndAsync
             // when we want to treat backslashes literally, we have @ strings...
             string fileName = @"C:\revature\persons_data.xml";
 
+            persons = DeserializeXMLFromFile(fileName);
+
+            persons.Add(new Person { Id = persons.Max(p => p.Id) + 1 });
+
             SerializeAsXMLToFile(fileName, persons);
         }
 
@@ -69,6 +74,33 @@ namespace SerializationAndAsync
             {
                 Console.WriteLine("error in writing to file:");
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                fileStream?.Dispose(); // all IDisposable have Dispose method.
+            }
+        }
+
+        private static List<Person> DeserializeXMLFromFile(string fileName)
+        {
+            var serializer = new XmlSerializer(typeof(List<Person>));
+            // in addition to those XmlBlahBlah attributes, we can also customize
+            // the format on the serializer object itself.
+
+            FileStream fileStream = null;
+
+            try
+            {
+                // create mode, to overwrite file if already exists.
+                fileStream = new FileStream(fileName, FileMode.Open);
+
+                return (List<Person>)serializer.Deserialize(fileStream);
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("error in writing to file:");
+                Console.WriteLine(ex.Message);
+                return null;
             }
             finally
             {
