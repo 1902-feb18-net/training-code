@@ -16,6 +16,24 @@ namespace CollectionTesting.Library
 
         // at least 5 methods
 
+        // ": base()" this means, if someone calls the zero-parameter constructor,
+        // first call the base class's zero parameter constructor (this is done by default
+        // already)
+        public MyStringCollection() : base()
+        {
+
+        }
+
+        // in C#, we prefer thin constructors,
+        // and setting properties after the fact.
+        // if we still want validation logic, we can put that in property "sets" and
+        // maybe a .Validate method.
+
+        public MyStringCollection(string[] initial) : base(initial)
+        {
+
+        }
+
         /// <summary>
         /// Replace all contained strings with lowercased versions.
         /// </summary>
