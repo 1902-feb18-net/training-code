@@ -1,4 +1,5 @@
-﻿using System.Xml.Serialization;
+﻿using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace SerializationAndAsync
 {
@@ -17,5 +18,9 @@ namespace SerializationAndAsync
 
         [XmlElement(ElementName = "StreetAddress")]
         public Address Address { get; set; }
+
+        [XmlIgnore]
+        [JsonIgnore]
+        public int Data { get; set; }
     }
 }
