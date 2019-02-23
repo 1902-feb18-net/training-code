@@ -191,7 +191,6 @@ namespace RestaurantReviews.ConsoleApp
                                             else if (input == "d")
                                             {
                                                 restaurantRepository.DeleteReview(reviews[reviewNum - 1].Id);
-                                                reviews.RemoveAt(reviewNum - 1);
                                             }
                                             else if (input == "b")
                                             {
@@ -268,7 +267,6 @@ namespace RestaurantReviews.ConsoleApp
                                         }
                                     }
                                     restaurantRepository.AddReview(newReview, restaurants[restaurantNum - 1]);
-                                    reviews.Add(newReview);
                                 }
                                 else if (input == "e")
                                 {
