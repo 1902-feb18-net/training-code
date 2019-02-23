@@ -292,6 +292,7 @@ namespace RestaurantReviews.ConsoleApp
                                         }
                                     }
                                     restaurant = newRestaurant;
+                                    restaurants[restaurantNum - 1] = restaurant;
                                     restaurantRepository.UpdateRestaurant(restaurant);
                                 }
                                 else if (input == "d")
