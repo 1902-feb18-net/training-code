@@ -1,0 +1,104 @@
+-- DDL
+
+-- Data Definition Language
+-- DDL operates on whole tables at a time, can't see individual rows.
+-- DDL also works with lots of other DB objects, like views, functions, procedures
+-- triggers, constraints, etc.
+
+-- to create, change, and delete these DB objects, we have:
+-- CREATE, ALTER, DROP
+
+-- GO is a special keyword to separate batches of commands
+-- some commands demand to be in their own batch.
+
+CREATE SCHEMA Movie;
+GO
+
+-- CREATE TABLE:
+
+-- CREATE TABLE gets comma-separated list of columns
+-- each column has name and data type.
+CREATE TABLE Movie.Movie (
+	MovieId INT
+);
+
+SELECT * FROM Movie.Movie;
+
+-- we have ALTER TABLE to add or delete columns
+--   (and do some other things too)
+ALTER TABLE Movie.Movie ADD
+	Title NVARCHAR(200);
+
+-- delete an entire table
+DROP TABLE Movie.Movie;
+
+-- we can specify constraints on each column
+
+-- constraints:
+--  - NOT NULL (null not allowed)
+--  - NULL (not really a constraint, just being explicit)
+--       (the default behavior: null is allowed)
+--  - PRIMARY KEY
+--       (sets PK, enforces uniqueness, sets clustered index)
+--       (implies NOT NULL, but we like to be explicit anyway)
+--  - UNIQUE (can be set on multiple columns taken together)
+--  - CHECK (an arbitrary condition that must be true for each row)
+--  - DEFAULT (give a default value for that column when inserted
+--         without an explicit value.) NULL is the default DEFAULT.
+--  - FOREIGN KEY
+--  - IDENTITY(start,increment) (not exactly a cosntraint, but similar)
+--       IDENTITY(10,10) would count: 10, 20, 30, 40 etc
+--       default values are 1,1. (counting: 1, 2, 3, 4, 5)
+--     by default, we aren't allowed to give explicit values for IDENTITY columns
+--       you'd need to turn on IDENTITY_INSERT option
+DROP TABLE Movie.Movie;
+CREATE TABLE Movie.Movie (
+	MovieId INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	Title NVARCHAR(200) NOT NULL,
+	ReleaseDate DATETIME2 NOT NULL,
+	DateModified DATETIME2 NOT NULL DEFAULT(GETDATE())
+	CONSTRAINT U_Movie_Title_Date UNIQUE (Title, ReleaseDate),
+	-- CONSTRAINT PK_blah PRIMARY KEY (col1, col2) -- (composite PK)
+	CONSTRAINT CHK_DateNotTooEarly CHECK (ReleaseDate > '1900')
+);
+
+INSERT INTO Movie.Movie (Title, ReleaseDate) VALUES (
+	'LOTR: THe Fellowship of the Ring', '2002'
+);
+
+--SELECT * FROM Movie.Movie;
+
+--INSERT INTO Movie.Movie (Title, ReleaseDate) VALUES (
+--	'bad movie date', '1800'
+--);
+
+--INSERT INTO Movie.Movie (MovieId, Title, ReleaseDate) VALUES (
+--	10, 'cant insert to identity col', '1950'
+--);
+
+DROP TABLE Movie.Genre;
+CREATE TABLE Movie.Genre (
+	GenreId INT NOT NULL PRIMARY KEY IDENTITY,
+	Name NVARCHAR(100) NOT NULL,
+	DateModified DATETIME2 DEFAULT(GETDATE()),
+	CHECK (Name != '')
+);
+
+ALTER TABLE Movie.Movie ADD
+	GenreID INT NULL,
+	CONSTRAINT FK_Movie_Genre FOREIGN KEY (GenreID) REFERENCES Movie.Genre (GenreId);
+
+-- adding columns without some default (or allowing null as default) is not allowed.
+-- workaround: allow NULL at first, fix up the existing rows, then add NOT NULL constraint.
+
+
+INSERT INTO Movie.Genre (Name) VALUES ('Action/Adventure');
+
+UPDATE Movie.Movie SET GenreID = 1;
+
+SELECT * FROM Movie.Movie;
+
+DELETE FROM Movie.Genre;
+
+-- not working:
+--ALTER TABLE Movie.Movie ADD CONSTRAINT NN_GenreID NOT NULL (GenreID)
