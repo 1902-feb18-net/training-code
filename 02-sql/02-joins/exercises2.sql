@@ -1,6 +1,10 @@
 -- exercises
 
 -- 1. show all invoices of customers from brazil (mailing address not billing)
+SELECT c.FirstName, c.LastName, i.*
+FROM Invoice AS i
+	JOIN Customer AS c ON i.CustomerId = c.CustomerId
+WHERE c.Country = 'Brazil';
 
 -- 2. show all invoices together with the name of the sales agent of each one
 
