@@ -1,6 +1,7 @@
 ﻿using HelloEntityFramework.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace HelloEntityFramework
 {
@@ -47,9 +48,75 @@ namespace HelloEntityFramework
             {
                 // lots of complex setup... here is where the payoff begins
                 PrintMovies(dbContext);
+                Console.WriteLine();
+
+                AddMovie(dbContext);
+
+                PrintMovies(dbContext);
+                Console.WriteLine();
+
+                UpdateMovies(dbContext);
+
+                PrintMovies(dbContext);
+                Console.WriteLine();
+
+                DeleteAMovie(dbContext);
+
+                PrintMovies(dbContext);
+                Console.WriteLine();
             }
 
             Console.ReadLine();
+        }
+
+        static void DeleteAMovie(MoviesContext dbContext)
+        {
+            var movieToDelete = dbContext.Movie
+                .OrderByDescending(x => x.ReleaseDate)
+                .First();
+
+            dbContext.Movie.Remove(movieToDelete);
+            dbContext.SaveChanges();
+        }
+
+        static void UpdateMovies(MoviesContext dbContext)
+        {
+            foreach (var movie in dbContext.Movie)
+            {
+                movie.ReleaseDate = movie.ReleaseDate.AddYears(1);
+            }
+            // that loop only runs in memory - changes are written to the DB
+            // with savechanges
+
+            // the objects that we get out of the DbSets are "tracked" by the DbContext.
+            // basically the DbContext knows about any changes we make to those objects.
+
+            dbContext.SaveChanges();
+        }
+
+        static void AddMovie(MoviesContext dbContext)
+        {
+            // read from db
+            // DbSet implements IQueryable, which has LINQ methods just like IEnumerable
+            //   IQueryable supports translating those lambdas into actual SQL commands
+            //   IEnumerable does all the processing in-memory
+            // so... this doesn't fetch all records into objects and then run a lambda on them
+            // it translates the lambda/LINQ into a SQL query.
+            Genre actionGenre = dbContext.Genre.First(g => g.Name.Contains("Action"));
+
+            var newMovie = new Movie
+            {
+                Title = "LOTR: The Two Towers",
+                ReleaseDate = DateTime.Now,
+                Genre = actionGenre
+            };
+
+            // tell the dbcontext we have a new movie to insert.
+            dbContext.Movie.Add(newMovie);
+            // won't do anything until we call "SaveChanges"
+
+            // this one actually accesses the SQL server and runs INSERT.
+            dbContext.SaveChanges();
         }
 
         static void PrintMovies(MoviesContext dbContext)
