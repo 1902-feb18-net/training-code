@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEntityFramework", "HelloEntityFramework\HelloEntityFramework.csproj", "{4E2E15A8-D692-4D7A-BF18-E34F37387639}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloEntityFramework.DataAccess", "HelloEntityFramework.DataAccess\HelloEntityFramework.DataAccess.csproj", "{8F6FAEEA-CF03-4F25-87DC-E8331DDA081A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{4E2E15A8-D692-4D7A-BF18-E34F37387639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E2E15A8-D692-4D7A-BF18-E34F37387639}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E2E15A8-D692-4D7A-BF18-E34F37387639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6FAEEA-CF03-4F25-87DC-E8331DDA081A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6FAEEA-CF03-4F25-87DC-E8331DDA081A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6FAEEA-CF03-4F25-87DC-E8331DDA081A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6FAEEA-CF03-4F25-87DC-E8331DDA081A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
