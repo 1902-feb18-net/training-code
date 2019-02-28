@@ -187,3 +187,62 @@ BEGIN
 
 	RETURN @initials;
 END
+
+-- triggers
+
+GO
+CREATE TRIGGER Movie.MovieDateModified ON Movie.Movie
+AFTER UPDATE
+AS
+BEGIN
+	-- inside a trigger, you have access to two special table variables
+	-- Inserted and Deleted
+	UPDATE Movie.Movie
+	SET DateModified = GETDATE()
+	WHERE MovieId IN (SELECT MovieId FROM Inserted);
+	-- in this case, Inserted has the new version of the updated rows
+END
+
+SELECT * FROM Movie.Movie;
+UPDATE Movie.Movie
+SET Title = 'LOTR: The Fellowship of the Ring'
+WHERE MovieId = 1;
+
+SELECT * FROM Movie.Movie;
+
+-- we can do triggers on INSERT, UPDATE, or DELETE
+-- they can be BEFORE, AFTER, or INSTEAD OF
+
+-- procedures
+-- procedures are like functions
+-- but they allow any SQL command inside them including DB write
+-- they don't have to return anything
+-- you can only call them with EXECUTE, never inside a SELECT or anything else
+GO
+CREATE PROCEDURE Movie.RenameMovies(@newname NVARCHAR(50), @rowschanged INT OUTPUT)
+AS
+BEGIN
+	-- we can use WHILE loops, IF ELSE, TRY CATCH
+	BEGIN TRY
+		IF (EXISTS (SELECT * FROM Movie.Movie))
+		BEGIN
+			SET @rowschanged = (SELECT COUNT(*) FROM Movie.Movie);
+
+			UPDATE Movie.Movie
+			SET Title = @newname;
+		END
+		ELSE
+		BEGIN
+			SET @rowschanged = 0;
+			RAISERROR('no movies found!', 16, 1);
+		END
+	END TRY
+	BEGIN CATCH
+		PRINT ERROR_MESSAGE();
+	END CATCH
+END
+GO
+
+DECLARE @rowschanged INT;
+EXECUTE Movie.RenameMovies 'Movie', @rowschanged;
+SELECT @rowschanged;
