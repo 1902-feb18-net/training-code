@@ -20,6 +20,14 @@ namespace AdoNetConnected
             // the connection string has all we need to connect to the database.
             var connString = SecretConfiguration.ConnectionString;
 
+            Console.WriteLine("Enter condition: ");
+            var condition = Console.ReadLine();
+            var commString = $"SELECT * FROM Movie.Movie WHERE {condition};";
+
+            // SQL injection:
+            // user could enter "1 = 1; DROP TABLE Movie.Movie;" and i drop table.
+            // solution: sanitize and validate all user input.
+
             // for connected architecture:
 
             // (we should also be catching exceptions)
@@ -29,7 +37,7 @@ namespace AdoNetConnected
                 connection.Open();
 
                 // 2. execute query
-                var commString = "SELECT * FROM Movie.Movie;";
+                //var commString = "SELECT * FROM Movie.Movie;";
                 using (var command = new SqlCommand(commString, connection))
                 {
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -44,6 +52,9 @@ namespace AdoNetConnected
                         {
                             // "reader.Read" advances the "cursor" through the results,
                             // one row at a time
+                            // the results are coming in to the computer's network buffer
+                            // and DataReader is reading them each as soon as they come in
+                            // (networks are slow compared to code)
                             while (reader.Read())
                             {
                                 object id = reader["MovieId"];
