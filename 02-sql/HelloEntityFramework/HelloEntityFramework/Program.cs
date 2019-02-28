@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HelloEntityFramework.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace HelloEntityFramework
 {
@@ -34,9 +36,29 @@ namespace HelloEntityFramework
         //     of concerns, more flexibility.
         //   if we scaffold with option "-DataAnnotations" we'll put the configuration
         //   on the Movie and Genre classes themselves with attributes.
+        //   third "way to configure" is convention-based
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var optionsBuilder = new DbContextOptionsBuilder<MoviesContext>();
+            optionsBuilder.UseSqlServer(SecretConfiguration.ConnectionString);
+            var options = optionsBuilder.Options;
+
+            using (var dbContext = new MoviesContext(options))
+            {
+                // lots of complex setup... here is where the payoff begins
+                PrintMovies(dbContext);
+            }
+
+            Console.ReadLine();
+        }
+
+        static void PrintMovies(MoviesContext dbContext)
+        {
+            foreach (var movie in dbContext.Movie)
+            {
+                Console.WriteLine($"Movie #{movie.MovieId}: {movie.Title}" +
+                    $" ({movie.ReleaseDate.Year})");
+            }
         }
     }
 }
