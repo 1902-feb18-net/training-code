@@ -100,5 +100,90 @@ SELECT * FROM Movie.Movie;
 
 DELETE FROM Movie.Genre;
 
--- not working:
---ALTER TABLE Movie.Movie ADD CONSTRAINT NN_GenreID NOT NULL (GenreID)
+ALTER TABLE Movie.Movie
+	ALTER COLUMN GenreID INT NOT NULL;
+
+-- computed columns
+ALTER TABLE Movie.Movie DROP COLUMN FullName;
+ALTER TABLE Movie.Movie ADD
+	FullName AS (Title + ' (' + CONVERT(NVARCHAR, YEAR(ReleaseDate)) + ')');
+
+SELECT * FROM Movie.Movie;
+-- computed columns have different options like PERSISTED
+
+-- views
+GO
+CREATE VIEW Movie.NewReleases AS
+	SELECT * FROM Movie.Movie
+	WHERE ReleaseDate > '2019-01-01';
+GO
+
+GO
+ALTER VIEW Movie.NewReleases AS
+	SELECT * FROM Movie.Movie
+	WHERE ReleaseDate >= '2019-02-01';
+GO
+
+SELECT * FROM Movie.Movie;
+SELECT * FROM Movie.NewReleases;
+
+-- 
+
+INSERT INTO Movie.NewReleases (Title, ReleaseDate, GenreID) VALUES
+	('LOTR: The Two Towers', '2019-02-01',
+		(SELECT GenreId FROM Movie.Genre WHERE Name = 'Action/Adventure'));
+
+-- views provide an abstraction over the actual table structure
+-- by running a query behind the scenes to generated what pretends to be a table
+
+-- we can do inserts/updates/deletes through it too, but
+-- only on columns that directly map to real table columns.
+
+-- variables in SQL Server
+DECLARE @action AS INT;
+SET @action = 1;
+
+-- table-valued variables
+DECLARE @my_table AS TABLE (
+	col1 INT, col2 INT
+);
+--INSERT INTO @my_table
+-- etc
+
+-- user-defined functions
+GO
+CREATE FUNCTION Movie.MoviesReleasedInYear(@year INT)
+RETURNS INT
+AS
+BEGIN
+	DECLARE @result INT;
+
+	SELECT @result = COUNT(*)
+	FROM Movie.Movie
+	WHERE YEAR(ReleaseDate) = @year;
+
+	RETURN @result;
+END
+GO
+
+SELECT Movie.MoviesReleasedInYear(2002);
+
+-- functions do not allow writing any data - only reading.
+
+-- exercise
+
+-- 1. write a function to get the initials of a customer based on his ID (look up string functions)
+GO
+CREATE FUNCTION GetCustomerInitials(@id INT)
+RETURNS NVARCHAR(3)
+AS
+BEGIN
+	DECLARE @initials NVARCHAR(3);
+
+	-- in SQL, string indexing is 1-based
+	SELECT @initials = SUBSTRING(FirstName, 1, 1) + SUBSTRING(LastName, 1, 1)
+	FROM Customer
+	WHERE CustomerId = @id;
+
+	RETURN @initials;
+END
