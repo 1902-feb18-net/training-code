@@ -1,5 +1,7 @@
 ﻿using HelloEntityFramework.DataAccess;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System;
 using System.Linq;
 
@@ -22,6 +24,8 @@ namespace HelloEntityFramework
         //      Scaffold-DbContext "<your-connection-string>"
         //             Microsoft.EntityFrameworkCore.SqlServer
         //             -Project <name-of-data-project> -Force
+        //     (you can get connection string from Azure, but, make sure to delete
+        //     the braces {} when you fill in the username and password.
         // (alternate 4/5. run in git bash/terminal:
         //      dotnet ef dbcontext scaffold "<your-connection-string>"
         //               Microsoft.EntityFrameworkCore.SqlServer
@@ -38,10 +42,18 @@ namespace HelloEntityFramework
         //   if we scaffold with option "-DataAnnotations" we'll put the configuration
         //   on the Movie and Genre classes themselves with attributes.
         //   third "way to configure" is convention-based
+        public static readonly LoggerFactory AppLoggerFactory =
+#pragma warning disable CS0618 // Type or member is obsolete
+            new LoggerFactory(new[] { new ConsoleLoggerProvider((_, __) => true, true) });
+#pragma warning restore CS0618 // Type or member is obsolete
+
         static void Main(string[] args)
         {
+
+
             var optionsBuilder = new DbContextOptionsBuilder<MoviesContext>();
             optionsBuilder.UseSqlServer(SecretConfiguration.ConnectionString);
+            optionsBuilder.UseLoggerFactory(AppLoggerFactory);
             var options = optionsBuilder.Options;
 
             using (var dbContext = new MoviesContext(options))
@@ -102,7 +114,9 @@ namespace HelloEntityFramework
             //   IEnumerable does all the processing in-memory
             // so... this doesn't fetch all records into objects and then run a lambda on them
             // it translates the lambda/LINQ into a SQL query.
-            Genre actionGenre = dbContext.Genre.First(g => g.Name.Contains("Action"));
+            Genre actionGenre = dbContext.Genre
+                .Include(g => g.Movie)
+                .First(g => g.Name.Contains("Action"));
 
             var newMovie = new Movie
             {
@@ -115,15 +129,29 @@ namespace HelloEntityFramework
             dbContext.Movie.Add(newMovie);
             // won't do anything until we call "SaveChanges"
 
+            // another equivalent way to add a new movie
+            newMovie = new Movie
+            {
+                Title = "LOTR: The Two Towers",
+                ReleaseDate = DateTime.Now
+            };
+            actionGenre.Movie.Add(newMovie);
+            // that will also insert it into the DB, with the right FK,
+            // etc.
+
             // this one actually accesses the SQL server and runs INSERT.
             dbContext.SaveChanges();
         }
 
         static void PrintMovies(MoviesContext dbContext)
         {
-            foreach (var movie in dbContext.Movie)
-            {
-                Console.WriteLine($"Movie #{movie.MovieId}: {movie.Title}" +
+            // code didn't work with this line, null exception on Genre.
+            // because we needed to load that relationship / navigation property
+            //foreach (var movie in dbContext.Movie)
+            // but with .Include, it will fetch that data we ask for.
+            foreach (var movie in dbContext.Movie.Include(m => m.Genre))
+                {
+                Console.WriteLine($"{movie.Genre.Name} Movie #{movie.MovieId}: {movie.Title}" +
                     $" ({movie.ReleaseDate.Year})");
             }
         }

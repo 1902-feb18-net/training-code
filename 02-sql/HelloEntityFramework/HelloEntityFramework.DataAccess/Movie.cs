@@ -11,6 +11,7 @@ namespace HelloEntityFramework.DataAccess
         public int GenreId { get; set; }
         public DateTime DateModified { get; set; }
 
+        // navigation properties
         public virtual Genre Genre { get; set; }
     }
 }

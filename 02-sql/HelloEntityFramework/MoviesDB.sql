@@ -29,3 +29,4 @@ INSERT INTO Movie.Genre (Name) VALUES
 INSERT INTO Movie.Movie (Title, ReleaseDate, GenreId) VALUES
 	( 'LOTR: The Fellowship of the Ring', '2001',
 		(SELECT GenreId FROM Movie.Genre WHERE Name = 'Action/Adventure'));
+
