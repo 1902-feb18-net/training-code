@@ -1,0 +1,213 @@
+<!-- HTML comments look like this -->
+<!-- we put our HTML in .html or .htm files -->
+
+<!-- the first part of an HTML document is
+    the document type definition (DTD) aka the doctype. -->
+<!-- tells the browser this is HTML, and what version. -->
+<!-- this minimal doctype is interpreted to mean: -->
+<!-- this is HTML 5, use latest HTML 5 behavior -->
+<!-- without a doctype, browser enters compatibility mode for old HTML -->
+<!DOCTYPE html>
+
+<!-- the doctype is not an element -->
+
+<!-- the root element for an HTML page is the HTML element, sometimes called
+the "document element" -->
+<html>
+
+<!-- the html element has two child elements: head, and body -->
+
+<head>
+    <!-- head is for metadata about the page, not actual page contents. -->
+
+    <!-- most of that metadata comes it with meta elements -->
+    <!-- this one sets the character set of the page to UTF-8. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- title element gives the name of the tab/window -->
+    <title>Page Title</title>
+    <!-- this one sets some initial viewport stuff for mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- importing an external CSS stylesheet -->
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+    <!-- importing an external JavaScript script. -->
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <!-- body is for all of the actual page contents -->
+    Hello,
+
+    <!-- html does not care about whitespace -->
+
+    world!
+
+    <!-- paragraph, line break -->
+    <p>One
+        para</p><p>Two <br>para</p>
+    <!-- section headers -->
+    <h1>Big header</h1>
+    <h2>smaller header</h2>
+    <h6>smallest header</h6>
+
+    <!-- images -->
+    <img src="https://3g4d13k75x47q7v53surz1gi-wpengine.netdna-ssl.com/wp-content/themes/revature/imgs/logo.png">
+
+    <!-- we can refer to local files with relative file path -->
+    <img src="assets/download.png">
+
+    <!-- anchor (a) for links -->
+    <!-- href attr for where to go -->
+    <!-- target attr for where to put the new page - _blank for new tab. -->
+    <p>Link to <a href="https://microsoft.com" target="_blank">Microsoft.com</a></p>
+
+    <!-- lists -->
+    <!-- ol ordered list (numbered) -->
+    <ol>
+        <!-- li list item -->
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3</li>
+    </ol>
+    <!-- ul unordered list (bullets) -->
+    <ul>
+        <!-- li list item -->
+        <li>item 1</li>
+        <li>item 2</li>
+        <li>item 3</li>
+    </ul>
+
+    <p>old fashioned poor separation of concerns thinking: <i>italic</i> <b>boldface</b> <u>underline</u></p>
+
+    <p>better separation of concerns HTML5 thinking: <em>emphasis</em> <strong>strong</strong> <u>underline</u></p>
+    <!-- it's CSS's job to decide how it really looks -->
+
+    <blockquote>
+        indented paragraph of quotation
+    </blockquote>
+
+    <!-- most HTML elements are by default either block or inline. -->
+    <!-- inline elements do not lay claim to their own vertical space on the page. -->
+    <!-- eg: strong, em, u, a, img -->
+    <!-- block elements claim some vertical space all to themselves -->
+    <!-- eg: p, ol, ul, li, h1 -->
+
+    <div>
+        div (division) is for generic block element -
+        <span>
+            span is for generic inline element
+        </span>
+    </div>
+    <!-- divs and spans especially, we put ids and classes on them so we can target them from CSS, JS. otherwise they're not doing much. -->
+
+    <!-- tables -->
+    <table>
+        <!-- thead for header rows -->
+        <thead>
+            <!-- tr for row -->
+            <tr>
+                <!-- th for table header cell. -->
+                <th>A</th>
+                <th>B</th>
+            </tr>
+        </thead>
+        <!-- tbody for the rest of rows -->
+        <tbody>
+            <tr>
+                <!-- td (table data?) for cells in row. -->
+                <td>A1</td>
+                <td>A2</td>
+            </tr>
+            <tr>
+                <td>B1</td>
+                <td>B2</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- including special characters -->
+    <!-- since VSCode is saving this file at UTF-8, and, I declared it in head at UTF-8, i can just include any unicode characters directly. -->
+    <p>những ý nghĩ</p>
+    <p>😀</p>
+
+    <!-- but, we also have character references in HTML. -->
+    <p>&</p>
+    <p>&lt; &gt; &amp;</p>
+    <!-- aka "HTML codes" -->
+    &copy;
+    <!-- for other stuff, usually we prefer just directly embedding the unicode characters, unless it's whitespace -->
+    &nbsp;
+    <!-- non-breaking space, a space that the browser isn't allowed to do a auto line break on -->
+
+    <!-- in addition to the "named" characters, we have numeric char references -->
+    <!-- decimal unicode: -->
+    &#1274;
+    <!-- hex unicode -->
+    &#x20a5;
+
+    <!-- "select list" aka dropdown -->
+    <!-- we can choose default selected one with selected="selected", or, the equiv shorthand: -->
+    <select>
+        <option>Reston</option>
+        <option selected>Arlington</option>
+        <option>Tampa</option>
+    </select>
+
+    <!-- new elements in HTML 5 -->
+    <!-- several structural elements -->
+    <main></main>
+    <article></article>
+    <section></section>
+    <header></header>
+    <footer></footer>
+    <aside></aside>
+    <nav></nav>
+    <!-- before, we'd do this: -->
+    <div class="header"></div>
+
+    <!-- we used to use plugins on the web, especially Flash -->
+
+    <!-- different a/v codecs: mp3, wav, h.234 -->
+    <!-- HTML5 lets the page offer several options, and the browser can pick which one it knows how to play. -->
+    <audio></audio>
+    <!-- we also have accessibility stuff - support for captions -->
+    <video></video>
+    <!-- for flash games/animations: -->
+    <canvas></canvas>
+
+    <!-- HTML5 added lots of accessibility attributes (ARIA) -->
+
+    <!-- forms -->
+    <!-- method: Get/POST -->
+    <!-- action: where to send the form data. default: current loaded URL. -->
+    <form method="POST">
+        <!-- inside the form, we put inputs. -->
+        Name: <input type="text" name="name" required pattern="[Nn][Ii][Cc][Kk] .*" maxlength="15" minlength="6">
+        <!-- we have a variety of validation attributes -->
+        <!-- required, pattern, minlength, maxlength -->
+        <!-- placeholder is an alternative to using labels -->
+
+        <label for="lastInput">Last name:</label>
+        <input type="text" name="last" id="lastInput">
+
+        <!-- another way: -->
+        <label>
+            Middle name:
+            <input type="text" name="middle">
+        </label>
+
+        <input type="submit">
+    </form>
+    <!-- a form that runs a Google search -->
+    <!-- the "name" of the input is,
+    what "code" expects that name to be
+    when the form is received -->
+    <form action="http://www.google.com/search" method="GET" target="_blank">
+        <input type="text" name="q" placeholder="Google Search">
+        <input type="hidden" name="extrafield" value="extradata">
+        <input type="submit" value="Search">
+        <!-- also have <button></button>  -->
+    </form>
+</body>
+
+</html>
