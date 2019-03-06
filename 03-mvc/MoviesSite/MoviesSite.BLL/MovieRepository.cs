@@ -38,8 +38,15 @@ namespace MoviesSite.BLL
 
         public void CreateMovie(Movie movie)
         {
-            int id = _moviesData.Max(m => m.Id) + 1;
-            movie.Id = id;
+            if (_moviesData.Count == 0)
+            {
+                movie.Id = 1;
+            }
+            else
+            {
+                int id = _moviesData.Max(m => m.Id) + 1;
+                movie.Id = id;
+            }
             _moviesData.Add(movie);
         }
 
