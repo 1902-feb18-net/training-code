@@ -31,6 +31,9 @@ namespace HelloMVC
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // here we register services that later on we can request from the framework.
+            // we will use that for dependency injection.
+            // that enables great separation of concerns
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -53,12 +56,28 @@ namespace HelloMVC
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
+            // here we configure "convention-based routing" aka global routing.
+            // routing is the process/rules by which we decide WHICH controller and
+            // WHICH action method will be instantiated and called to handle the current
+            // request.
             app.UseMvc(routes =>
             {
+                // mvc checks these "route conventions" one by one in order
+                // looking for a match.
+
+                // if the url looks like: "GoToHome"
+                // then, delegate to home controller, index action.
+                routes.MapRoute(
+                    name: "homealias",
+                    template: "GoToHome/{id?}",
+                    defaults: new { Controller = "Home", Action = "Index" });
                 routes.MapRoute(
                     name: "default",
+                    // the "id?" at the end here is an optional route parameter "id"
                     template: "{controller=Home}/{action=Index}/{id?}");
+                // we could put a catch-all at the very bottom for e.g. page not found
             });
+            // C# lets us make objects of anonymous type or anonymous class.
         }
     }
 }

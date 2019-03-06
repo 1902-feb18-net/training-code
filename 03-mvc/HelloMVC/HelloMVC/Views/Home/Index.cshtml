@@ -1,4 +1,7 @@
 ﻿@model HelloMVC.Models.User
+@* up there is a "@model directive" *@
+@* that defines what type of model this view will accept. *@
+@* a given view can accept only one model. *@
 
 @{
     ViewData["Title"] = "Home Page";
@@ -7,4 +10,47 @@
 <div class="text-center">
     <h1 class="display-4">Welcome @Model.Username</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<div>
+    Check on <a asp-route="homealias" asp-route-id="1">user #1</a>
+    Check on <a asp-route="homealias" asp-route-id="2">user #2</a>
+    Check on <a asp-route="homealias" asp-route-id="3">user #3</a>
+    Check on <a asp-route="homealias" asp-route-id="4">user #4</a>
+</div>
+
+<div>
+    <form asp-action="IndexWithUser">
+        <div>
+            <label asp-for="@Model.Username" />
+            <input asp-for="@Model.Username" />
+        </div>
+
+        <input type="submit" />
+    </form>
+</div>
+
+<div>
+    <h3>User addresses:</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Street</th>
+                <th>City + State</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ var id = 1; }
+            @foreach (var address in Model.Address)
+            {
+                <tr>
+                    <td>@id</td>
+                    <td>@address.Street</td>
+                    <td>@address.CityState</td>
+                </tr>
+                id++;
+            }
+        </tbody>
+    </table>
 </div>

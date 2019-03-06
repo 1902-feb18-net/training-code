@@ -8,5 +8,7 @@ namespace HelloMVC.Models
     public class User
     {
         public string Username { get; set; }
+
+        public IEnumerable<Address> Address { get; set; } = new List<Address>();
     }
 }
