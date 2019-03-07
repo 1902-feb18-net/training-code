@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesSite.App", "MoviesSite.App\MoviesSite.App.csproj", "{EFC10629-9208-4C6E-BB84-B6077010FDB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesSite.App", "MoviesSite.App\MoviesSite.App.csproj", "{EFC10629-9208-4C6E-BB84-B6077010FDB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesSite.BLL", "MoviesSite.BLL\MoviesSite.BLL.csproj", "{1261BB06-DF1F-456E-9DD7-DF58EA5C80A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoviesSite.BLL", "MoviesSite.BLL\MoviesSite.BLL.csproj", "{1261BB06-DF1F-456E-9DD7-DF58EA5C80A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesSite.DataAccess", "MoviesSite.DataAccess\MoviesSite.DataAccess.csproj", "{A49AD9F7-D7D3-46DB-97EA-C3C5AA73DFCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1261BB06-DF1F-456E-9DD7-DF58EA5C80A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1261BB06-DF1F-456E-9DD7-DF58EA5C80A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1261BB06-DF1F-456E-9DD7-DF58EA5C80A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A49AD9F7-D7D3-46DB-97EA-C3C5AA73DFCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A49AD9F7-D7D3-46DB-97EA-C3C5AA73DFCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A49AD9F7-D7D3-46DB-97EA-C3C5AA73DFCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A49AD9F7-D7D3-46DB-97EA-C3C5AA73DFCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
