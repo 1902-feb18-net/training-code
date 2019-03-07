@@ -54,7 +54,7 @@ namespace MoviesSite.BLL
         {
             var oldMovie = MovieById(id);
             oldMovie.Title = movie.Title;
-            oldMovie.Genre = GenreById(movie.Genre.Id);
+            oldMovie.Genre = movie.Genre is null ? null : GenreById(movie.Genre.Id);
             oldMovie.DateReleased = movie.DateReleased;
         }
 

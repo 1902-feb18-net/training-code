@@ -26,7 +26,16 @@ namespace MoviesSite.App.Controllers
         // GET: Movies/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            try
+            {
+                var movie = MovieRepo.MovieById(id);
+                return View(movie);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // should log that, and redirect to error page
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         // GET: Movies/Create
@@ -55,30 +64,51 @@ namespace MoviesSite.App.Controllers
         // GET: Movies/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            // with edit, we like to pre-populate the existing values
+            try
+            {
+                var movie = MovieRepo.MovieById(id);
+                return View(movie);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // log that, and redirect to error page
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         // POST: Movies/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, Movie movie)
         {
             try
             {
-                // TODO: Add update logic here
+                // here we would validate the user input
+
+                MovieRepo.UpdateMovie(id, movie);
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(movie);
             }
         }
 
         // GET: Movies/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            try
+            {
+                var movie = MovieRepo.MovieById(id);
+                return View(movie);
+            }
+            catch (InvalidOperationException ex)
+            {
+                // should log that, and redirect to error page
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         // POST: Movies/Delete/5
@@ -88,7 +118,7 @@ namespace MoviesSite.App.Controllers
         {
             try
             {
-                // TODO: Add delete logic here
+                MovieRepo.DeleteMovie(id);
 
                 return RedirectToAction(nameof(Index));
             }
