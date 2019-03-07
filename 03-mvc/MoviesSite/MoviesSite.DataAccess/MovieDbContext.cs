@@ -16,9 +16,20 @@ namespace MoviesSite.DataAccess
     // 1. have separate data access class library project.
     // 2. add NuGet package Microsoft.EntityFrameworkCore.SqlServer
     // 3. implement your context class (inheriting from DbContext).
-    //    a. need constructor receiving DbContextOptions
+    //    a. need constructor receiving DbContextOptions and zero-param constructor
+    //    b. need DbSets
+    //    c. need OnModelCreating
+    // 4. enable migrations
+    //     (just like with the db-first scaffolding, there is "Package Manager Console" way
+    //     and dotnet CLI ("dotnet ef") way also.
+    //      both require nuget package Microsoft.EntityFrameworkCore.Tools (.DotNet?)
+    // 5. add initial migration
+    // 6. update database.
     public class MovieDbContext : DbContext
     {
+        public MovieDbContext()
+        { }
+
         public MovieDbContext(DbContextOptions<MovieDbContext> options) : base(options)
         { }
 

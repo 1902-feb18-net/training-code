@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MoviesSite.BLL;
+using MoviesSite.DataAccess;
 
 namespace MoviesSite.App
 {
@@ -44,6 +46,9 @@ namespace MoviesSite.App
             SeedDatabase();
         }
 
+        // this config objects is pulled from many sources by default...
+        // appsettings.json, appsettings.Development.json, environment variables,
+        // user secrets (how we will put connection string.).
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -56,20 +61,39 @@ namespace MoviesSite.App
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            // here, we register "services" to be injected when requested.
+            // here, we register "services" to be injected when asked for.
 
             // adds service for "MovieRepository" type, with "scoped" lifetime
             services.AddScoped<MovieRepository>();
-            // "scoped" lifetime means, one concrete object per request.
+            // "scoped" lifetime means, one concrete object per HTTP request.
 
-            // add services for the two IList types requested by MovieRepo.
+            // add services for the two IList types asked for by MovieRepo.
             // ("singleton" lifetime)
             services.AddSingleton<IList<Movie>>(_moviesDb);
             services.AddSingleton<IList<Genre>>(_genreDb);
             // when using "singleton" lifetime, we can just make the instance ourselves
             // and give it to the service provider.
-            // "singleton" means, we might request this service 1000 times, and all
+            // "singleton" means, we might ask for this service 1000 times, and all
             // will get the same concrete object.
+
+            // DbContext is going to be required by MovieRepository now...
+            // so, we will register it as a service
+            // (also, so that Add-Migration/Update-Database can see it.)
+            services.AddDbContext<MovieDbContext>(builder =>
+                builder.UseSqlServer(Configuration.GetConnectionString("MovieDB")));
+            // this will seek in Configuration for
+            // "MovieDB" value inside "ConnectionStrings" section.
+            //    we should add that in "user secrets"
+
+            //  should look like this since i named it "MovieDB":
+            //      {
+            //        "ConnectionStrings": {
+            //          "MovieDB": "<your-connection-string>"
+            //        }
+            //      }
+
+            // AddDbContext is how we register DbContexts as services. it uses
+            //  "scoped" lifetime by default (new DbContext for each HTTP request.)
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
