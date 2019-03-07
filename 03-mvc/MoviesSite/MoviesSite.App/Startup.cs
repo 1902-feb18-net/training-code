@@ -64,8 +64,14 @@ namespace MoviesSite.App
             // here, we register "services" to be injected when asked for.
 
             // adds service for "MovieRepository" type, with "scoped" lifetime
-            services.AddScoped<MovieRepository>();
+            //services.AddScoped<MovieRepository>();
+            // when we register services under an interface, we use two type parameters
+            // like this: for interface, and for implementation.
+            services.AddScoped<IMovieRepository, MovieDbRepository>();
             // "scoped" lifetime means, one concrete object per HTTP request.
+
+            // because the dbcontext has "scoped" lifetime, and the repository
+            // USES that dbcontext, it must also have scoped (or lesser) lifetime
 
             // add services for the two IList types asked for by MovieRepo.
             // ("singleton" lifetime)

@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MoviesSite.BLL;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MoviesSite.DataAccess
 {
@@ -15,16 +13,22 @@ namespace MoviesSite.DataAccess
     // steps for code-first EF:
     // 1. have separate data access class library project.
     // 2. add NuGet package Microsoft.EntityFrameworkCore.SqlServer
+    //      to both MVC app and data access library. also 
+    //        Microsoft.EntityFrameworkCore.Tools on the data access library.
     // 3. implement your context class (inheriting from DbContext).
     //    a. need constructor receiving DbContextOptions and zero-param constructor
     //    b. need DbSets
     //    c. need OnModelCreating
-    // 4. enable migrations
+    // 4. register the DbContext in Startup.ConfigureServices (using
+    //      connection string from user secrets)
+    // 5. add migration
     //     (just like with the db-first scaffolding, there is "Package Manager Console" way
     //     and dotnet CLI ("dotnet ef") way also.
     //      both require nuget package Microsoft.EntityFrameworkCore.Tools (.DotNet?)
-    // 5. add initial migration
-    // 6. update database.
+    //     Add-Migration (with "project" dropdown in Pack. Man. Console set to data access)
+    // 6. update database (Update-Database).
+    // 7. every time we want to change data model, we DON'T write SQL, we change the C#
+    //      classes, and goto step 5.
     public class MovieDbContext : DbContext
     {
         public MovieDbContext()
@@ -64,10 +68,23 @@ namespace MoviesSite.DataAccess
                                                  //   be made for it)
             });
 
+            modelBuilder.Entity<Movie>().HasData(new
+            {
+                Id = 1,
+                Title = "Star Wars VI",
+                DateReleased = new DateTime(1970, 1, 1),
+                GenreId = 1 // action?
+            });
+
             modelBuilder.Entity<Genre>(builder =>
             {
                 // defaults probably fine
             });
+
+            modelBuilder.Entity<Genre>().HasData(
+                new Genre { Id = 1, Name = "Action" },
+                new Genre { Id = 2, Name = "Drama" }
+            );
         }
     }
 }

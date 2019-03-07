@@ -18,12 +18,12 @@ namespace MoviesSite.App.Controllers
         // two steps to set up dependency injection -
         // 1. register the dep. as a service in Startup.ConfigureServices.
         // 2. request the service (typically, by just having it as ctor parameter.)
-        public MoviesController(MovieRepository movieRepo)
+        public MoviesController(IMovieRepository movieRepo)
         {
             MovieRepo = movieRepo;
         }
 
-        public MovieRepository MovieRepo { get; set; }
+        public IMovieRepository MovieRepo { get; set; }
 
         // GET: Movies
         public ActionResult Index()

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MoviesSite.BLL
 {
-    public class MovieRepository
+    public class MovieRepository : IMovieRepository
     {
         private readonly IList<Movie> _moviesData;
         private readonly IList<Genre> _genreData;
