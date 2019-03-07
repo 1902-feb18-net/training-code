@@ -28,7 +28,8 @@ namespace MoviesSite.DataAccess
 
         public IEnumerable<Movie> AllMoviesWithGenre(Genre genre)
         {
-            return _dbContext.Movie.Where(m => m.Genre.Id == genre.Id).ToList();
+            return _dbContext.Movie.Include(m => m.Genre)
+                .Where(m => m.Genre.Id == genre.Id).ToList();
         }
 
         public Movie MovieById(int id)
