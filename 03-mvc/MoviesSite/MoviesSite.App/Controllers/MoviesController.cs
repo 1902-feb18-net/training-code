@@ -4,14 +4,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MoviesSite.App.ViewModels;
 using MoviesSite.BLL;
 
 namespace MoviesSite.App.Controllers
 {
     public class MoviesController : Controller
     {
-        private static readonly List<Movie> _moviesDb = new List<Movie>();
-        private static readonly List<Genre> _genreDb = new List<Genre>();
+        private static readonly List<Movie> _moviesDb;
+        private static readonly List<Genre> _genreDb;
+
+#pragma warning disable S3963 // "static" fields should be initialized inline
+        static MoviesController()
+        {
+            _genreDb = new List<Genre>
+            {
+                new Genre { Id = 1, Name = "Action" },
+                new Genre { Id = 2, Name = "Drama" }
+            };
+            _moviesDb = new List<Movie>
+            {
+                new Movie
+                {
+                    Id = 1,
+                    Title = "Star Wars IV",
+                    DateReleased = new DateTime(1970, 1, 1),
+                    Genre = _genreDb[0] // action
+                }
+            };
+        }
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
         public MovieRepository MovieRepo { get; set; } =
             new MovieRepository(_moviesDb, _genreDb);
@@ -20,7 +42,14 @@ namespace MoviesSite.App.Controllers
         public ActionResult Index()
         {
             IEnumerable<Movie> movies = MovieRepo.AllMovies();
-            return View(movies);
+            var viewModels = movies.Select(m => new MovieViewModel
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Genre = m.Genre,
+                ReleaseDate = m.DateReleased
+            });
+            return View(viewModels);
         }
 
         // GET: Movies/Details/5
@@ -29,7 +58,15 @@ namespace MoviesSite.App.Controllers
             try
             {
                 var movie = MovieRepo.MovieById(id);
-                return View(movie);
+                var viewModel = new MovieViewModel
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    ReleaseDate = movie.DateReleased,
+                    Genre = movie.Genre,
+                    Genres = MovieRepo.AllGenres().ToList()
+                };
+                return View(viewModel);
             }
             catch (InvalidOperationException ex)
             {
@@ -41,23 +78,40 @@ namespace MoviesSite.App.Controllers
         // GET: Movies/Create
         public ActionResult Create()
         {
-            return View();
+            var viewModel = new MovieViewModel
+            {
+                Genres = MovieRepo.AllGenres().ToList()
+            };
+            // give the Create view values for its dropdown
+            return View(viewModel);
         }
 
         // POST: Movies/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Movie movie)
+        public ActionResult Create(MovieViewModel viewModel)
         {
             try
             {
+                // we convert from the view model back and forth to the BLL class
+                // when needed.
+                // the view talks in terms of view model now; but the repo
+                // talks in terms of Movie.
+                var movie = new Movie
+                {
+                    Id = viewModel.Id,
+                    Title = viewModel.Title,
+                    DateReleased = viewModel.ReleaseDate,
+                    Genre = MovieRepo.GenreById(viewModel.Genre.Id)
+                };
+
                 MovieRepo.CreateMovie(movie);
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View(movie);
+                return View(viewModel);
             }
         }
 
@@ -68,7 +122,15 @@ namespace MoviesSite.App.Controllers
             try
             {
                 var movie = MovieRepo.MovieById(id);
-                return View(movie);
+                var viewModel = new MovieViewModel
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    ReleaseDate = movie.DateReleased,
+                    Genre = movie.Genre,
+                    Genres = MovieRepo.AllGenres().ToList()
+                };
+                return View(viewModel);
             }
             catch (InvalidOperationException ex)
             {
@@ -80,11 +142,31 @@ namespace MoviesSite.App.Controllers
         // POST: Movies/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Movie movie)
+        public ActionResult Edit(int id, MovieViewModel viewModel)
         {
             try
             {
-                // here we would validate the user input
+                // here we are validating the user input
+                if (!ModelState.IsValid)
+                {
+                    // the DataAnnotations on the view model
+                    // prompt client-side validation, but also,
+                    // during model binding (when the user's form data
+                    // is put into the parameters of this action method)
+                    // we also check all those same conditions.
+                    // ModelState will have error objects inside it that we
+                    // check right now.
+                    viewModel.Genres = MovieRepo.AllGenres().ToList();
+                    return View(viewModel);
+                }
+
+                var movie = new Movie
+                {
+                    Id = viewModel.Id,
+                    Title = viewModel.Title,
+                    DateReleased = viewModel.ReleaseDate,
+                    Genre = MovieRepo.GenreById(viewModel.Genre.Id)
+                };
 
                 MovieRepo.UpdateMovie(id, movie);
 
@@ -92,7 +174,7 @@ namespace MoviesSite.App.Controllers
             }
             catch
             {
-                return View(movie);
+                return View(viewModel);
             }
         }
 
@@ -102,7 +184,14 @@ namespace MoviesSite.App.Controllers
             try
             {
                 var movie = MovieRepo.MovieById(id);
-                return View(movie);
+                var viewModel = new MovieViewModel
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    ReleaseDate = movie.DateReleased,
+                    Genre = movie.Genre
+                };
+                return View(viewModel);
             }
             catch (InvalidOperationException ex)
             {

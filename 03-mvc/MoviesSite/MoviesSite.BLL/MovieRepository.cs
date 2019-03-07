@@ -16,6 +16,11 @@ namespace MoviesSite.BLL
             _genreData = genreData;
         }
 
+        public IEnumerable<Genre> AllGenres()
+        {
+            return _genreData.ToList();
+        }
+
         public IEnumerable<Movie> AllMovies()
         {
             return _moviesData.ToList();

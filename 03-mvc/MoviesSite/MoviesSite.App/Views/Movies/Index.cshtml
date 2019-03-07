@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MoviesSite.BLL.Movie>
+﻿@model IEnumerable<MoviesSite.App.ViewModels.MovieViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateReleased)
+                @Html.DisplayNameFor(model => model.ReleaseDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Genre)
@@ -39,7 +39,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateReleased)
+                @Html.DisplayFor(modelItem => item.ReleaseDate)
             </td>
             <td>
                 @(item.Genre?.Name ?? "(none)")
