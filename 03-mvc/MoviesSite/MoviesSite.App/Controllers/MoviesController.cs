@@ -11,32 +11,19 @@ namespace MoviesSite.App.Controllers
 {
     public class MoviesController : Controller
     {
-        private static readonly List<Movie> _moviesDb;
-        private static readonly List<Genre> _genreDb;
+        // the moviescontroller depends on MovieRepository.
+        // instead of the controller instantiating its own dependency (new MovieRepo)
+        // ASP.NET gives us the ability to have that dependency "injected".
 
-#pragma warning disable S3963 // "static" fields should be initialized inline
-        static MoviesController()
+        // two steps to set up dependency injection -
+        // 1. register the dep. as a service in Startup.ConfigureServices.
+        // 2. request the service (typically, by just having it as ctor parameter.)
+        public MoviesController(MovieRepository movieRepo)
         {
-            _genreDb = new List<Genre>
-            {
-                new Genre { Id = 1, Name = "Action" },
-                new Genre { Id = 2, Name = "Drama" }
-            };
-            _moviesDb = new List<Movie>
-            {
-                new Movie
-                {
-                    Id = 1,
-                    Title = "Star Wars IV",
-                    DateReleased = new DateTime(1970, 1, 1),
-                    Genre = _genreDb[0] // action
-                }
-            };
+            MovieRepo = movieRepo;
         }
-#pragma warning restore S3963 // "static" fields should be initialized inline
 
-        public MovieRepository MovieRepo { get; set; } =
-            new MovieRepository(_moviesDb, _genreDb);
+        public MovieRepository MovieRepo { get; set; }
 
         // GET: Movies
         public ActionResult Index()
