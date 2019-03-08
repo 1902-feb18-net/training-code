@@ -6,6 +6,7 @@ using MoviesSite.BLL;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace MoviesSite.Tests.App.Controllers
@@ -99,9 +100,11 @@ namespace MoviesSite.Tests.App.Controllers
         public IEnumerable<Genre> AllGenres() => new List<Genre>();
 
         public IEnumerable<Movie> AllMovies() => throw new NotImplementedException();
+        public Task<IEnumerable<Movie>> AllMoviesAsync() => throw new NotImplementedException();
         public IEnumerable<Movie> AllMoviesWithGenre(Genre genre) => throw new NotImplementedException();
         public void CreateMovie(Movie movie) => throw new NotImplementedException();
         public void DeleteMovie(int id) => throw new NotImplementedException();
+        public Task DeleteMovieAsync(int id) => throw new NotImplementedException();
         public Genre GenreById(int id) => throw new NotImplementedException();
         public Movie MovieById(int id) => throw new NotImplementedException();
         public void UpdateMovie(int id, Movie movie) => throw new NotImplementedException();

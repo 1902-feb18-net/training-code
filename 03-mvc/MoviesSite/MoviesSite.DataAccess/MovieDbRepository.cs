@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MoviesSite.DataAccess
 {
@@ -24,6 +25,11 @@ namespace MoviesSite.DataAccess
         public IEnumerable<Movie> AllMovies()
         {
             return _dbContext.Movie.Include(m => m.Genre).ToList();
+        }
+
+        public async Task<IEnumerable<Movie>> AllMoviesAsync()
+        {
+            return await _dbContext.Movie.Include(m => m.Genre).ToListAsync();
         }
 
         public IEnumerable<Movie> AllMoviesWithGenre(Genre genre)
@@ -61,6 +67,12 @@ namespace MoviesSite.DataAccess
         {
             _dbContext.Movie.Remove(MovieById(id));
             _dbContext.SaveChanges();
+        }
+
+        public async Task DeleteMovieAsync(int id)
+        {
+            _dbContext.Movie.Remove(MovieById(id));
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -53,7 +53,7 @@ namespace MoviesSite.App.Controllers
     */
 
         // attribute routing - in contrast to global/convention-based routing
-    [Route("Films/[action]")]
+    [Route("Films/[action]/{id?}")]
     public class MoviesController : Controller
     {
         // the moviescontroller depends on MovieRepository.
@@ -74,7 +74,7 @@ namespace MoviesSite.App.Controllers
         [Route("{num:int?}")]
         [Route("Index/{num:int?}")]
         [Route("[controller]/asdfasdf/{num:int?}/ShowAllMovies")]
-        public ActionResult Index([FromQuery] int num, [FromServices] IList<Movie> asdf)
+        public async Task<ActionResult> Index([FromQuery] int num, [FromServices] IList<Movie> asdf)
         {
             // we have [FromQuery] to get that param from query string ("?key=val" in URL)
             // we have [FromForm]/[FromBody] to get it from a form submission.
@@ -83,7 +83,7 @@ namespace MoviesSite.App.Controllers
             // we also have [FromServices]
             //   to ask for some service exactly like constructor parameters do.
 
-            IEnumerable<Movie> movies = MovieRepo.AllMovies();
+            IEnumerable<Movie> movies = await MovieRepo.AllMoviesAsync();
             var viewModels = movies.Select(m => new MovieViewModel
             {
                 Id = m.Id,
@@ -273,17 +273,18 @@ namespace MoviesSite.App.Controllers
         // POST: Movies/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(int id, IFormCollection collection)
         {
             try
             {
-                MovieRepo.DeleteMovie(id);
+                await MovieRepo.DeleteMovieAsync(id);
 
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                // should provide some error message
+                return RedirectToAction(nameof(Index));
             }
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MoviesSite.BLL
 {
@@ -67,5 +68,8 @@ namespace MoviesSite.BLL
         {
             _moviesData.Remove(MovieById(id));
         }
+
+        public Task<IEnumerable<Movie>> AllMoviesAsync() => throw new NotImplementedException();
+        public Task DeleteMovieAsync(int id) => throw new NotImplementedException();
     }
 }
