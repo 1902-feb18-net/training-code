@@ -50,6 +50,7 @@ namespace MoviesSite.Tests.App.Controllers
             Assert.Empty(viewModel.Genres);
         }
 
+        [Fact]
         public void GetCreateReturnsGenresView()
         {
             // arrange
@@ -64,7 +65,7 @@ namespace MoviesSite.Tests.App.Controllers
             var result = sut.Create();
 
             // assert
-            var viewResult = Assert.IsAssignableFrom<ViewResult>(null);
+            var viewResult = Assert.IsAssignableFrom<ViewResult>(result);
             // IsAssignableFrom also does a null check
             var viewModel = Assert.IsAssignableFrom<MovieViewModel>(viewResult.Model);
 
