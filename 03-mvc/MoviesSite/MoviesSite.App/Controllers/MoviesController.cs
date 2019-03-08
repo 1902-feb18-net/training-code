@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MoviesSite.App.ViewModels;
 using MoviesSite.BLL;
 
@@ -56,6 +57,8 @@ namespace MoviesSite.App.Controllers
     [Route("Films/[action]/{id?}")]
     public class MoviesController : Controller
     {
+        private readonly ILogger<MoviesController> _logger;
+
         // the moviescontroller depends on MovieRepository.
         // instead of the controller instantiating its own dependency (new MovieRepo)
         // ASP.NET gives us the ability to have that dependency "injected".
@@ -63,9 +66,10 @@ namespace MoviesSite.App.Controllers
         // two steps to set up dependency injection -
         // 1. register the dep. as a service in Startup.ConfigureServices.
         // 2. request the service (typically, by just having it as ctor parameter.)
-        public MoviesController(IMovieRepository movieRepo)
+        public MoviesController(IMovieRepository movieRepo, ILogger<MoviesController> logger)
         {
             MovieRepo = movieRepo;
+            _logger = logger;
         }
 
         public IMovieRepository MovieRepo { get; set; }
@@ -101,6 +105,7 @@ namespace MoviesSite.App.Controllers
 
             if (TempData.ContainsKey("counter"))
             {
+                _logger.LogInformation("counter found in tempdata, increasing.");
                 TempData["counter"] = ((int)TempData["counter"]) + 1;
             }
             else
@@ -157,6 +162,8 @@ namespace MoviesSite.App.Controllers
                     // i could use [Required] attr to achieve this
                     // but here is example of manual adding of model error.
                     ModelState.AddModelError("Genre", "Required genre");
+
+                    _logger.LogWarning("genre is null, returning with model error.");
                 }
                 if (!ModelState.IsValid)
                 {
@@ -204,6 +211,7 @@ namespace MoviesSite.App.Controllers
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogError(ex, "No such movie with id.");
                 // log that, and redirect to error page
                 return RedirectToAction("Error", "Home");
             }

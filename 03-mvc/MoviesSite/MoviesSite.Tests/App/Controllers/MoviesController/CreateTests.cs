@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using MoviesSite.App.Controllers;
 using MoviesSite.App.ViewModels;
@@ -30,7 +32,9 @@ namespace MoviesSite.Tests.App.Controllers
             //   that would still be integration test.
 
             var fakeRepo = new FakeMovieRepository();
-            var sut = new MoviesController(fakeRepo);
+            // null logger is easier than mocking ILogger in practice
+            var nullLogger = new Logger<MoviesController>(new NullLoggerFactory());
+            var sut = new MoviesController(fakeRepo, nullLogger);
             // i need some IMovieRepo that gives GetAllGenres as empty
 
             // act
@@ -55,12 +59,13 @@ namespace MoviesSite.Tests.App.Controllers
         public void GetCreateReturnsGenresView()
         {
             // arrange
+            var nullLogger = new Logger<MoviesController>(new NullLoggerFactory());
             var genres = new List<Genre> { new Genre { Id = 1, Name = "Action" } };
             var mockRepo = new Mock<IMovieRepository>();
             //   set up the mock object
             mockRepo.Setup(r => r.AllGenres()).Returns(genres);
             // give the set-up mock object to the object to be tested.
-            var sut = new MoviesController(mockRepo.Object);
+            var sut = new MoviesController(mockRepo.Object, nullLogger);
 
             // act
             var result = sut.Create();
