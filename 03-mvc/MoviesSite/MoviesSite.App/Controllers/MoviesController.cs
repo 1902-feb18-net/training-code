@@ -9,6 +9,51 @@ using MoviesSite.BLL;
 
 namespace MoviesSite.App.Controllers
 {
+    // ways to get data from the controller to the view.
+    // 1. (strongly-typed view) the model.
+    //     often will be a view model
+    //     view can only take one model, so, if you need several,
+    //     either that's a collection type of some kind, or,
+    //     you make a new view model that contains the several you need.
+    // 2. ViewData - a key-value pair dictionary
+    //      this object is reachable via a property on Controller.
+    //      we can assign values in the controller, and access them in the view.
+    //      (during the same HTTP request! it's cleared between requests.)
+    // 3. ViewBag - a different way to access ViewData - "dynamic" type.
+    //       set properties instead of using indexing syntax w/ string.
+
+    // 4. TempData - a key-value pair dictionary
+    //      the values inside it survive across requests "magically"
+    //      (by default - stored using cookies sent to the client
+    //       which are then sent back to the server on subsequent requests.
+    //       - but, we can configure other providers for TempData in Startup.)
+    //     e.g. we can use this to incrementally build some model
+    //      that needs many forms to be submitted, not just one
+
+    //    with regular ["key"] access, the value you access gets deleted after the
+    //       current request. we can circumvent that with methods
+    //         - .Peek("key")
+    //                accesses value without marking for deletion
+    //         - .Keep("key")
+    //                unmarks a value for deletion
+
+    // the other way we can keep data around to incrementally build something like
+    // an Order is with hidden form fields (corresponding to view model properties ofc.).
+
+    /*
+    <form asp-action="Post">
+        <!-- other non-hidden form fields --> 
+        @for(int i = 0; i<Model.Count; i++)
+        {
+            @Html.Hidden($"items[{i}].Id", Model[i].Id)
+            @Html.Hidden($"items[{i}].Name", Model[i].Name)
+        }
+        <input type = "submit" value="Post" class="btn btn-default" />
+    </form>
+    */
+
+        // attribute routing - in contrast to global/convention-based routing
+    [Route("Films/[action]")]
     public class MoviesController : Controller
     {
         // the moviescontroller depends on MovieRepository.
@@ -26,8 +71,18 @@ namespace MoviesSite.App.Controllers
         public IMovieRepository MovieRepo { get; set; }
 
         // GET: Movies
-        public ActionResult Index()
+        [Route("{num:int?}")]
+        [Route("Index/{num:int?}")]
+        [Route("[controller]/asdfasdf/{num:int?}/ShowAllMovies")]
+        public ActionResult Index([FromQuery] int num, [FromServices] IList<Movie> asdf)
         {
+            // we have [FromQuery] to get that param from query string ("?key=val" in URL)
+            // we have [FromForm]/[FromBody] to get it from a form submission.
+            // we have [FromRoute] to get it from route parameter (defined in attr or global routes)
+
+            // we also have [FromServices]
+            //   to ask for some service exactly like constructor parameters do.
+
             IEnumerable<Movie> movies = MovieRepo.AllMovies();
             var viewModels = movies.Select(m => new MovieViewModel
             {
@@ -35,7 +90,24 @@ namespace MoviesSite.App.Controllers
                 Title = m.Title,
                 Genre = m.Genre,
                 ReleaseDate = m.DateReleased
-            });
+            }).ToList();
+
+            // "dynamic" type - compile-time type checking turned off
+            //  because we can add new properties to that object at any time.
+
+            ViewBag.numOfMovies = viewModels.Count;
+            ViewData["currentTime"] = DateTime.Now;
+            ViewData["numFromActionMethod"] = num;
+
+            if (TempData.ContainsKey("counter"))
+            {
+                TempData["counter"] = ((int)TempData["counter"]) + 1;
+            }
+            else
+            {
+                TempData["counter"] = num;
+            }
+
             return View(viewModels);
         }
 
