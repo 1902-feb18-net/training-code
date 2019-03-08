@@ -152,6 +152,17 @@ namespace MoviesSite.App.Controllers
         {
             try
             {
+                if (viewModel.Genre is null || viewModel.Genre.Id == 0)
+                {
+                    // i could use [Required] attr to achieve this
+                    // but here is example of manual adding of model error.
+                    ModelState.AddModelError("Genre", "Required genre");
+                }
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+
                 // we convert from the view model back and forth to the BLL class
                 // when needed.
                 // the view talks in terms of view model now; but the repo
