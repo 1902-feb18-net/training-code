@@ -46,3 +46,11 @@ Dockerfile:
     provides instructions to build a new image from some base image.
     FROM:
         sets the base image to use for subsequent layers
+
+when we do a docker build:
+
+1. the entire directory contents (the "build context") is sent to the docker daemon.
+2. then, we run each command in the dockerfile.
+3. any COPY commands use that build context for the source.
+
+we can use .dockerignore to hide files from that step 1.
