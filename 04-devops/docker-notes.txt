@@ -5,5 +5,24 @@ Docker Toolbox is meant to be one-click setup for running Linux containers on Wi
 
 docker run <image-name>
     this starts a new container from the given image (downloading that image if necessary)
+    "-it" options after "run" we need when the CMD is some shell like bash,
+        to attach the container's input to the current terminal's input.
 docker pull <image-name>
     just downloads the image (or updates, if there's some new version)
+docker build <dir>
+    <dir> should be the directory with the Dockerfile.
+    usually we cd to that directory beforehand anyway, so <dir> is "."
+    use "-t <image+tag>" to tag the image like "ConsoleApp:1.0".
+
+docker image:
+    template for container to start
+    has the whole file system
+    has a pointer to some program inside the image that should run
+        when we start the container
+    images are LAYERED - every image has some base image, adding
+        new layers on top of it
+
+Dockerfile:
+    provides instructions to build a new image from some base image.
+    FROM:
+        sets the base image to use for subsequent layers
