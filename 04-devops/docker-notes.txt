@@ -1,0 +1,9 @@
+if we all had windows 10 professional, or linux, we could install real docker.
+but non-pro windows 10 doesn't support containers (yet?) so, we have Docker Toolbox.
+
+Docker Toolbox is meant to be one-click setup for running Linux containers on Windows using a small Linux virtual machine.
+
+docker run <image-name>
+    this starts a new container from the given image (downloading that image if necessary)
+docker pull <image-name>
+    just downloads the image (or updates, if there's some new version)
