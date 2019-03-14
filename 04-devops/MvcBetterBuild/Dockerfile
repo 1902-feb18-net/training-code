@@ -15,6 +15,10 @@ RUN dotnet restore
 COPY . ./
 
 # build & publish to /app/out
+RUN dotnet build --no-restore
+
+RUN dotnet test
+
 RUN dotnet publish --no-restore -c Release -o out
 
 # docker allows us to use some layers just temporarily
