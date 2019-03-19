@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace MyWcfConsumer
 {
@@ -27,9 +28,14 @@ namespace MyWcfConsumer
                 Console.WriteLine("Enter number: ");
                 if (int.TryParse(Console.ReadLine(), out var num))
                 {
-                    var doubled = await client.DoubleNumberAsync(num);
+                    using (var trans = new TransactionScope())
+                    {
+                        var doubled = await client.DoubleNumberAsync(num);
 
-                    Console.WriteLine($"Doubled: {doubled}");
+                        Console.WriteLine($"Doubled: {doubled}");
+
+                        trans.Complete();
+                    }
                 }
                 else
                 {

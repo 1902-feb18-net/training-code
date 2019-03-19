@@ -16,7 +16,8 @@ namespace MySoapService
 
         public string GetServiceVersion()
         {
-            return Version;
+            throw new NotImplementedException();
+            //return Version;
         }
 
         public int DoubleNumber(int num)
@@ -37,8 +38,7 @@ namespace MySoapService
                 };
             }
 
-            throw new FaultException<InvalidOperationException>(
-                new InvalidOperationException("no question found with id 1"), "invalid");
+            throw new FaultException("invalid");
         }
     }
 }

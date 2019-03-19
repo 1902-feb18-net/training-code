@@ -16,6 +16,7 @@ namespace MySoapService
         string GetServiceVersion();
 
         [OperationContract]
+        [OperationBehavior(TransactionScopeRequired = true)]
         int DoubleNumber(int num);
 
         [OperationContract]
