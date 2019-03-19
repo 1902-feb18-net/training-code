@@ -55,11 +55,20 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Connected Services\MyService\MyWcfConsumer.MyService.Question.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
     <None Include="Connected Services\MyService\Service1.wsdl" />
     <None Include="Connected Services\MyService\Service1.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Connected Services\MyService\Service11.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MyService\Service12.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\MyService\Service13.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

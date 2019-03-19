@@ -23,5 +23,22 @@ namespace MySoapService
         {
             return num * 2;
         }
+
+        public Question GetQuestion(int id)
+        {
+            if (id == 1)
+            {
+                return new Question
+                {
+                    QuestionId = 1,
+                    Category = "basic",
+                    Rating = 5,
+                    DateModified = DateTime.Now
+                };
+            }
+
+            throw new FaultException<InvalidOperationException>(
+                new InvalidOperationException("no question found with id 1"), "invalid");
+        }
     }
 }

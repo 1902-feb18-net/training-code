@@ -35,6 +35,13 @@ namespace MyWcfConsumer
                 {
                     Console.WriteLine("Not an number!");
                 }
+
+                Question question = client.GetQuestion(1);
+                Console.WriteLine(question.QuestionId);
+                // can't access DateModified because not exposed with [DataMember]
+
+                Question question2 = client.GetQuestion(2);
+                Console.WriteLine(question2.QuestionId);
             }
 
             Console.ReadKey();

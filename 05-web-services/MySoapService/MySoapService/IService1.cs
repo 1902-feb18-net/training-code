@@ -17,5 +17,9 @@ namespace MySoapService
 
         [OperationContract]
         int DoubleNumber(int num);
+
+        [OperationContract]
+        [FaultContract(typeof(InvalidOperationException))]
+        Question GetQuestion(int id);
     }
 }
