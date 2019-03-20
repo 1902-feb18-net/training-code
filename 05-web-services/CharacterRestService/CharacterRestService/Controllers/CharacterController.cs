@@ -36,7 +36,7 @@ namespace CharacterRestService.Controllers
         public ActionResult<Character> GetById(int id)
         {
             // using fancy pattern matching syntax
-            if (_data.FirstOrDefault(x => x.Id == id) is var character)
+            if (_data.FirstOrDefault(x => x.Id == id) is Character character)
             {
                 return character;
             }
@@ -72,7 +72,7 @@ namespace CharacterRestService.Controllers
         {
             // implementation choice, whether PUT on nonexistent resource is
             // successful or error.
-            if (_data.FirstOrDefault(x => x.Id == id) is var existing)
+            if (_data.FirstOrDefault(x => x.Id == id) is Character existing)
             {
                 existing.Name = character.Name;
                 return NoContent(); // 204
@@ -85,7 +85,7 @@ namespace CharacterRestService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
-            if (_data.FirstOrDefault(x => x.Id == id) is var existing)
+            if (_data.FirstOrDefault(x => x.Id == id) is Character existing)
             {
                 _data.Remove(existing);
                 return NoContent(); // 204
