@@ -39,12 +39,17 @@ namespace CharacterRestConsumer
 
         static async Task PrintCharsAsync(string url, HttpClient httpClient)
         {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            // request xml format
+            // request.Headers.Accept.ParseAdd("application/xml");
+
             // await the headers of the response
-            HttpResponseMessage response = await httpClient.GetAsync(url);
+            HttpResponseMessage response = await httpClient.SendAsync(request);
             // throw an exception if status code indicates failure
             response.EnsureSuccessStatusCode();
             // await the whole body of the response
             string responseText = await response.Content.ReadAsStringAsync();
+
             // deserialize the body
             var characters = JsonConvert.DeserializeObject<List<Character>>(responseText);
 
