@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CharacterRestService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize] // [Authorize] on whole controller
     [ApiController]
     public class ValuesController : ControllerBase
     {
@@ -18,6 +20,8 @@ namespace CharacterRestService.Controllers
 
         // GET api/values
         [HttpGet]
+        [AllowAnonymous] // for auth, more specific attribute overrides less specific
+                         // this "undoes" the [Authorize] on the controller.
         public ActionResult<IEnumerable<string>> Get()
         {
             return _data.Values;

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterRestService", "CharacterRestService\CharacterRestService.csproj", "{DDBAB383-C5B8-467C-855B-B1C7823E828A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CharacterRestService", "CharacterRestService\CharacterRestService.csproj", "{DDBAB383-C5B8-467C-855B-B1C7823E828A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CharacterRestDAL", "CharacterRestDAL\CharacterRestDAL.csproj", "{CA4C7591-3306-49C8-9848-EA69E2B2C9ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DDBAB383-C5B8-467C-855B-B1C7823E828A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDBAB383-C5B8-467C-855B-B1C7823E828A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDBAB383-C5B8-467C-855B-B1C7823E828A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA4C7591-3306-49C8-9848-EA69E2B2C9ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA4C7591-3306-49C8-9848-EA69E2B2C9ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA4C7591-3306-49C8-9848-EA69E2B2C9ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA4C7591-3306-49C8-9848-EA69E2B2C9ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

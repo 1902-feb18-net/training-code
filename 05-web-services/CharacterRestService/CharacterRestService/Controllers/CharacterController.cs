@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CharacterRestService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,8 @@ namespace CharacterRestService.Controllers
 
         // GET: api/Character/1
         [HttpGet("{id}")]
+        [Authorize] // Authorize by itself means, any logged in user (anyone authenticated)
+                    // can access this action method.
         //[Produces("application/xml")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Character> GetById(int id)
