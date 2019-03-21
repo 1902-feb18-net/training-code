@@ -50,6 +50,11 @@ namespace CharacterMvc.Controllers
         // GET: Character/Create
         public ActionResult Create()
         {
+            if (!(AccountDetails?.Roles?.Contains("admin") ?? false))
+            {
+                // access denied
+                return View("Error");
+            }
             return View();
         }
 
@@ -58,6 +63,11 @@ namespace CharacterMvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(ApiCharacter character)
         {
+            if (!(AccountDetails?.Roles?.Contains("admin") ?? false))
+            {
+                // access denied
+                return View("Error");
+            }
             try
             {
                 if (!ModelState.IsValid)

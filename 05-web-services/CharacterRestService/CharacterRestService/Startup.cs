@@ -58,6 +58,15 @@ namespace CharacterRestService
                         // we use Task.FromResult when we're in an async context
                         // but there's nothing to await.
                         return Task.FromResult(0);
+                    },
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        // prevent redirect, just return forbidden
+                        context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                        context.Response.Headers.Remove("Location");
+                        // we use Task.FromResult when we're in an async context
+                        // but there's nothing to await.
+                        return Task.FromResult(0);
                     }
                 };
             });

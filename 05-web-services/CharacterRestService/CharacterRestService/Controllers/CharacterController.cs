@@ -25,6 +25,13 @@ namespace CharacterRestService.Controllers
         //[Produces("application/xml")]
         public IEnumerable<Character> Get()
         {
+            // if we want to know which user is logged in or which roles he has
+            // apart from [Authorize[ attribute...
+            //User.Identity.IsAuthenticated;
+            //User.IsInRole("admin");
+            //User.Identity.Name;
+
+
             return _data;
             // whenever an action method returns something that's not an IActionResult
             // ... it's automatically wrapped in 200 OK response.
@@ -53,6 +60,7 @@ namespace CharacterRestService.Controllers
 
         // POST: api/Character
         [HttpPost]
+        [Authorize(Roles = "admin")] // we give comma-separated list of allowed roles
         [ProducesResponseType(typeof(Character), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Post([FromBody, Bind("Name")] Character character)

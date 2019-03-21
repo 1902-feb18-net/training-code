@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CharacterMvc.ApiModels;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
@@ -17,7 +18,9 @@ namespace CharacterMvc.Controllers
         public Uri ServiceUrl { get; }
         public string ServiceCookieName { get; }
 
-        public AServiceController(HttpClient httpClient, IConfiguration configuration)
+        public ApiAccountDetails AccountDetails { get; set; }
+
+        protected AServiceController(HttpClient httpClient, IConfiguration configuration)
         {
             HttpClient = httpClient;
 
