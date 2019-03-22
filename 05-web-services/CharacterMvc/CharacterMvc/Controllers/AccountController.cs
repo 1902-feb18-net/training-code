@@ -44,7 +44,7 @@ namespace CharacterMvc.Controllers
             catch
             {
                 ModelState.AddModelError("", "Unexpected server error");
-                return View();
+                return View(login);
             }
 
             if (!response.IsSuccessStatusCode)
@@ -53,17 +53,19 @@ namespace CharacterMvc.Controllers
                 {
                     // login failed because bad credentials
                     ModelState.AddModelError("", "Login or password incorrect.");
-                    return View();
                 }
-                ModelState.AddModelError("", "Unexpected server error");
-                return View();
+                else
+                {
+                    ModelState.AddModelError("", "Unexpected server error");
+                }
+                return View(login);
             }
 
             var success = PassCookiesToClient(response);
             if (!success)
             {
                 ModelState.AddModelError("", "Unexpected server error");
-                return View();
+                return View(login);
             }
 
             // login success
@@ -84,7 +86,7 @@ namespace CharacterMvc.Controllers
             {
                 response = await HttpClient.SendAsync(request);
             }
-            catch
+            catch (HttpRequestException)
             {
                 return View("Error", new ErrorViewModel());
             }
@@ -128,7 +130,7 @@ namespace CharacterMvc.Controllers
             {
                 response = await HttpClient.SendAsync(request);
             }
-            catch
+            catch (HttpRequestException)
             {
                 ModelState.AddModelError("", "Unexpected server error");
                 return View(register);
@@ -136,12 +138,6 @@ namespace CharacterMvc.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                if (response.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    // login failed because bad credentials
-                    ModelState.AddModelError("", "Login or password incorrect.");
-                    return View(register);
-                }
                 ModelState.AddModelError("", "Unexpected server error");
                 return View(register);
             }
