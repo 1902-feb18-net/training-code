@@ -17,13 +17,13 @@ namespace CharacterRestService.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly ILogger<AccountController> _logger;
+        //private readonly ILogger<AccountController> _logger;
 
-        public AccountController(SignInManager<IdentityUser> signInManager,
-            ILogger<AccountController> logger)
+        public AccountController(SignInManager<IdentityUser> signInManager/*,
+            ILogger<AccountController> logger*/)
         {
             SignInManager = signInManager;
-            _logger = logger;
+            //_logger = logger;
 
             // we can do code-first "skipping" migrations at runtime
             // the downside is, we can't run migrations on the database that gets generated
@@ -47,7 +47,7 @@ namespace CharacterRestService.Controllers
             // User.Identity.Name
             if (!User.Identity.IsAuthenticated)
             {
-                _logger.LogInformation("");
+                //_logger.LogInformation("");
                 return null;
             }
             var details = new ApiAccountDetails

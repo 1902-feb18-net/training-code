@@ -19,12 +19,12 @@ namespace CharacterRestService
 {
     public class Startup
     {
-        private readonly ILogger _logger;
+        //private readonly ILogger _logger;
 
-        public Startup(IConfiguration configuration, ILogger<Startup> logger)
+        public Startup(IConfiguration configuration/*, ILogger<Startup> logger*/)
         {
             Configuration = configuration;
-            _logger = logger;
+            //_logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -84,7 +84,7 @@ namespace CharacterRestService
                     }
                 };
             });
-            _logger.LogInformation("Configured application cookie: {CookieName}", cookieName);
+            //_logger.LogInformation("Configured application cookie: {CookieName}", cookieName);
 
             // enable authentication middleware
             services.AddAuthentication();
@@ -127,7 +127,7 @@ namespace CharacterRestService
             {
                 c.SwaggerEndpoint(swaggerUrl, "Character API V1");
             });
-            _logger.LogInformation("Configured Swagger endpoint: {SwaggerEndpointUrl}", swaggerUrl);
+            //_logger.LogInformation("Configured Swagger endpoint: {SwaggerEndpointUrl}", swaggerUrl);
 
             app.UseHttpsRedirection();
             app.UseMvc();
