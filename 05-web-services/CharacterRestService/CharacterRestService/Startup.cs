@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Threading.Tasks;
@@ -18,9 +19,12 @@ namespace CharacterRestService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger _logger;
+
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -29,6 +33,7 @@ namespace CharacterRestService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<ICharacterRepository, CharacterRepository>();
+
             services.AddSingleton<IMapper, Mapper>();
 
             services.AddDbContext<AppDbContext>(options =>
@@ -52,15 +57,17 @@ namespace CharacterRestService
 
             // set up the cookies for authentication
             // to plug in to the authentication filters.
+            var cookieName = Configuration["AuthCookieName"];
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = "CharacterServiceAuth";
+                options.Cookie.Name = Configuration["AuthCookieName"];
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = context =>
                     {
                         // prevent redirect, just return unauthorized
+                        _logger.LogInformation("Replacing redirect to login with 401");
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.Headers.Remove("Location");
                         // we use Task.FromResult when we're in an async context
@@ -70,14 +77,14 @@ namespace CharacterRestService
                     OnRedirectToAccessDenied = context =>
                     {
                         // prevent redirect, just return forbidden
+                        _logger.LogInformation("Replacing redirect to access denied with 403");
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.Headers.Remove("Location");
-                        // we use Task.FromResult when we're in an async context
-                        // but there's nothing to await.
                         return Task.FromResult(0);
                     }
                 };
             });
+            _logger.LogInformation("Configured application cookie: {CookieName}", cookieName);
 
             // enable authentication middleware
             services.AddAuthentication();
@@ -115,10 +122,12 @@ namespace CharacterRestService
             app.UseSwagger();
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.
+            var swaggerUrl = Configuration["SwaggerEndpointUrl"];
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint(Configuration["SwaggerEndpointUrl"], "Character API V1");
+                c.SwaggerEndpoint(swaggerUrl, "Character API V1");
             });
+            _logger.LogInformation("Configured Swagger endpoint: {SwaggerEndpointUrl}", swaggerUrl);
 
             app.UseHttpsRedirection();
             app.UseMvc();
