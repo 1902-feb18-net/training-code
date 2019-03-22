@@ -1,0 +1,53 @@
+pool:
+  name: Default
+  demands:
+  - java
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+- script: dotnet restore
+
+- task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
+  inputs:
+    SonarCloud: sonarcloud
+    organization: '1902-feb18-net'
+    projectKey: escalona1902charapi
+    projectName: CharacterSiteAPI
+
+- script: dotnet build --configuration $(buildConfiguration) --no-restore
+
+- task: DotNetCoreCLI@2
+  displayName: .NET Core Test
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: '--configuration $(buildConfiguration)'
+    nobuild: true
+
+- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+
+- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+
+- task: DotNetCoreCLI@2
+  displayName: .NET Core Publish
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '**/CharacterRestService/*.csproj'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/publish'
+    modifyOutputPath: false
+    nobuild: true
+
+- task: AzureRmWebAppDeployment@4
+  displayName: 'Azure App Service Deploy: escalona1902charapi'
+  inputs:
+    azureSubscription: 'nick-azure'
+    WebAppName: escalona1902charapi
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/publish'
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish'
