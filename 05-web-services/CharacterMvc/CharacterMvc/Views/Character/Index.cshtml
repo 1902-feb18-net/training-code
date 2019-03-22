@@ -2,17 +2,14 @@
 
 @{
     ViewData["Title"] = "Index";
-    var details = ViewData["accountDetails"] as CharacterMvc.ApiModels.ApiAccountDetails;
+    var account = ViewData["accountDetails"] as CharacterMvc.ApiModels.ApiAccountDetails;
 }
 
 <h1>Index</h1>
 
-@if (details?.Roles?.Contains("admin") ?? false)
-{
-    <p>
-        <a asp-action="Create">Create New</a>
-    </p>
-}
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -22,7 +19,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
-            @*<th></th>*@
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -35,11 +32,15 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
-                @*<td>
-                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                        @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                    </td>*@
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    | @Html.ActionLink("Details", "Details", new { id = item.Id })
+
+                    @if (account?.Roles?.Contains("admin") ?? false)
+                    {
+                        @:| @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                    }
+                </td>
             </tr>
         }
     </tbody>

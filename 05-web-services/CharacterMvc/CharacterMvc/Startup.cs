@@ -33,7 +33,13 @@ namespace CharacterMvc
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            // httpclient should be a singleton to avoid some socket leak issues
             services.AddSingleton<HttpClient>();
+
+            // if the filter needs services then it should be a service too.
+            // (if i needed it per-controller or per-attribute i'd need to
+            // use [ServiceFilter()] attr with this now, but i don't)
+            services.AddScoped<GetAccountDetailsFilter>();
 
             // adding filters globally
             services.AddMvc(options =>
@@ -52,7 +58,7 @@ namespace CharacterMvc
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler(Configuration["ErrorHandlingPath"]);
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }

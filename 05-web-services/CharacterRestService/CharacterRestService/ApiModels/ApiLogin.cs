@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CharacterRestService.Models
+namespace CharacterRestService.ApiModels
 {
-    public class Login
+    public class ApiLogin
     {
         [EmailAddress]
         public string Username { get; set; }

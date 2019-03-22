@@ -1,4 +1,6 @@
-﻿using CharacterRestDAL;
+﻿using CharacterRest;
+using CharacterRestDAL;
+using CharacterRestService.ApiModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +28,12 @@ namespace CharacterRestService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<ICharacterRepository, CharacterRepository>();
+            services.AddSingleton<IMapper, Mapper>();
+
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("AppDb")));
+
             // set up the database (via code-first, manually) and the dbcontext for auth
             // we could just plug in IdentityDbContext here without subclassing
             services.AddDbContext<AuthDbContext>(options =>
@@ -36,8 +44,8 @@ namespace CharacterRestService
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 // we could just use defaults and not set anything on options
-                options.Password.RequiredLength = 12;
-                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
                 // many options here
             })
                 .AddEntityFrameworkStores<AuthDbContext>();
@@ -47,7 +55,7 @@ namespace CharacterRestService
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "CharacterServiceAuth";
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = context =>
@@ -109,7 +117,7 @@ namespace CharacterRestService
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Character API V1");
+                c.SwaggerEndpoint(Configuration["SwaggerEndpointUrl"], "Character API V1");
             });
 
             app.UseHttpsRedirection();

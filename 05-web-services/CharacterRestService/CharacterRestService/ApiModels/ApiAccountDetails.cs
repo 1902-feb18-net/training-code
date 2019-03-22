@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CharacterRestService.Models
+namespace CharacterRestService.ApiModels
 {
-    public class AccountDetails
+    public class ApiAccountDetails
     {
-        public bool IsAuthenticated { get; set; }
         public string Username { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }

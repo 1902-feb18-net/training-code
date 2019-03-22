@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CharacterMvc.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using CharacterMvc.Models;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
 using System.Net.Http;
 
 namespace CharacterMvc.Controllers
@@ -14,14 +10,10 @@ namespace CharacterMvc.Controllers
     {
         public HomeController(HttpClient httpClient, IConfiguration configuration)
             : base(httpClient, configuration)
-        { }
-
-        public IActionResult Index()
         {
-            return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Index()
         {
             return View();
         }

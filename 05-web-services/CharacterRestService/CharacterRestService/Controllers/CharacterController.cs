@@ -1,38 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CharacterRestService.Models;
+﻿using CharacterRest;
+using CharacterRestService.ApiModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CharacterRestService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class CharacterController : ControllerBase
     {
-        private static readonly List<Character> _data = new List<Character>()
+        private readonly ICharacterRepository _characterRepository;
+        private readonly IMapper _mapper;
+
+        public CharacterController(ICharacterRepository characterRepository, IMapper mapper)
         {
-            new Character { Id = 1, Name = "Nick" },
-            new Character { Id = 2, Name = "Fred" },
-        };
+            _characterRepository = characterRepository;
+            _mapper = mapper;
+        }
 
         // GET: api/Character
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         //[Produces("application/xml")]
-        public IEnumerable<Character> Get()
+        public IEnumerable<ApiCharacter> Get()
         {
-            // if we want to know which user is logged in or which roles he has
-            // apart from [Authorize[ attribute...
-            //User.Identity.IsAuthenticated;
-            //User.IsInRole("admin");
-            //User.Identity.Name;
-
-
-            return _data;
+            return _characterRepository.GetAll().Select(_mapper.Map);
             // whenever an action method returns something that's not an IActionResult
             // ... it's automatically wrapped in 200 OK response.
         }
@@ -42,14 +39,14 @@ namespace CharacterRestService.Controllers
         [HttpGet("{id}")]
         [Authorize] // Authorize by itself means, any logged in user (anyone authenticated)
                     // can access this action method.
-        //[Produces("application/xml")]
+                    //[Produces("application/xml")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Character> GetById(int id)
+        public async Task<ActionResult<ApiCharacter>> GetById(int id)
         {
             // using fancy pattern matching syntax
-            if (_data.FirstOrDefault(x => x.Id == id) is Character character)
+            if (await _characterRepository.GetByIdAsync(id) is Character character)
             {
-                return character;
+                return _mapper.Map(character);
             }
 
             return NotFound();
@@ -61,45 +58,48 @@ namespace CharacterRestService.Controllers
         // POST: api/Character
         [HttpPost]
         [Authorize(Roles = "admin")] // we give comma-separated list of allowed roles
-        [ProducesResponseType(typeof(Character), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiCharacter), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Post([FromBody, Bind("Name")] Character character)
+        public async Task<IActionResult> Post([FromBody, Bind("Name")] ApiCharacter apiCharacter)
         {
             // there was some "overposting" vulnerability here... i do not want client to be able
             // to set the ID. either i can make sure to ignore that value if he sends it
             // or i can explicitly not bind it.
 
-            var newId = _data.Max(x => x.Id) + 1;
-            character.Id = newId;
-            _data.Add(character);
-
-            return CreatedAtAction(nameof(GetById), new { id = newId }, character);
+            Character character = _mapper.Map(apiCharacter);
+            Character newCharacter = await _characterRepository.AddAsync(character);
+            ApiCharacter newApiCharacter = _mapper.Map(newCharacter);
+            return CreatedAtAction(nameof(GetById), new { id = newApiCharacter.Id },
+                newApiCharacter);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Put(int id, [FromBody, Bind("Name")] Character character)
+        public async Task<IActionResult> Put(int id, [FromBody, Bind("Name")] ApiCharacter apiCharacter)
         {
             // implementation choice, whether PUT on nonexistent resource is
             // successful or error.
-            if (_data.FirstOrDefault(x => x.Id == id) is Character existing)
+            if (await _characterRepository.GetByIdAsync(id) is null)
             {
-                existing.Name = character.Name;
-                return NoContent(); // 204
+                return NotFound();
             }
-            return NotFound();
+            Character character = _mapper.Map(apiCharacter);
+            character.Id = id;
+            await _characterRepository.UpdateAsync(character);
+
+            return NoContent(); // 204
         }
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (_data.FirstOrDefault(x => x.Id == id) is Character existing)
+            if (await _characterRepository.GetByIdAsync(id) is Character character)
             {
-                _data.Remove(existing);
+                await _characterRepository.DeleteAsync(character);
                 return NoContent(); // 204
             }
             return NotFound();

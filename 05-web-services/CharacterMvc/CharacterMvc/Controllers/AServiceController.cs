@@ -3,29 +3,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CharacterMvc.Controllers
 {
     public abstract class AServiceController : Controller
     {
         public HttpClient HttpClient { get; }
+        public IConfiguration Configuration { get; }
         public Uri ServiceUrl { get; }
-        public string ServiceCookieName { get; }
 
-        public ApiAccountDetails AccountDetails { get; set; }
+        public ApiAccountDetails Account { get; set; }
 
         protected AServiceController(HttpClient httpClient, IConfiguration configuration)
         {
             HttpClient = httpClient;
-
-            ServiceUrl = new Uri(configuration["ServiceUrl"]);
-            ServiceCookieName = configuration["ServiceCookieName"];
+            Configuration = configuration;
+            ServiceUrl = new Uri(Configuration["ServiceUrl"]);
         }
 
         public HttpRequestMessage CreateRequestToService(HttpMethod method,
@@ -43,11 +39,12 @@ namespace CharacterMvc.Controllers
 
             // get the value of the app's auth cookie from the browser's request.
             // (if present) and copy it to the api request.
-            var cookieValue = Request.Cookies[ServiceCookieName];
+            var cookieName = Configuration["ServiceCookieName"];
+            var cookieValue = Request.Cookies[cookieName];
 
             if (cookieValue != null)
             {
-                var headerValue = new CookieHeaderValue(ServiceCookieName, cookieValue);
+                var headerValue = new CookieHeaderValue(cookieName, cookieValue);
                 apiRequest.Headers.Add("Cookie", headerValue.ToString());
             }
 

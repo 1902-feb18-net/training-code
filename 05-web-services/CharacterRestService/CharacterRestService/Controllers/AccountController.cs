@@ -1,40 +1,51 @@
 ﻿using CharacterRestDAL;
-using CharacterRestService.Models;
+using CharacterRestService.ApiModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace CharacterRestService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class AccountController : ControllerBase
     {
         public SignInManager<IdentityUser> SignInManager { get; }
-        public RoleManager<IdentityRole> RoleManager { get; }
 
-        public AccountController(SignInManager<IdentityUser> signInManager,
-            RoleManager<IdentityRole> roleManager,
-            AuthDbContext dbContext)
+        public AccountController(SignInManager<IdentityUser> signInManager)
         {
             SignInManager = signInManager;
-            RoleManager = roleManager;
 
             // we can do code-first "skipping" migrations at runtime
             // the downside is, we can't run migrations on the database that gets generated
             // later.
-            dbContext.Database.EnsureCreated();
+            //dbContext.Database.EnsureCreated()
+            // i'm gonna do migrations
+            // when you do migrations and there's two dbcontexts, you have to specify
+            // (it'll prompt you)
         }
 
         [HttpGet("[action]")]
-        public AccountDetails Details()
+        [AllowAnonymous]
+        public ApiAccountDetails Details()
         {
-            var details = new AccountDetails
+            // if we want to know which user is logged in or which roles he has
+            // apart from [Authorize] attribute...
+            // we have User.Identity.IsAuthenticated
+            // User.IsInRole("admin")
+            // User.Identity.Name
+            if (!User.Identity.IsAuthenticated)
             {
-                IsAuthenticated = User.Identity.IsAuthenticated,
+                return null;
+            }
+            var details = new ApiAccountDetails
+            {
                 Username = User.Identity.Name,
                 Roles = User.Claims.Where(c => c.Type == ClaimTypes.Role)
                                    .Select(c => c.Value)
@@ -46,9 +57,10 @@ namespace CharacterRestService.Controllers
         // when there is no way to fit the operation into CRUD terms.
         // POST /account/login
         [HttpPost("[action]")]
-        public async Task<IActionResult> Login(Login login)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(ApiLogin login)
         {
-            var result = await SignInManager.PasswordSignInAsync(
+            SignInResult result = await SignInManager.PasswordSignInAsync(
                 login.Username, login.Password, login.RememberMe, false);
 
             if (!result.Succeeded)
@@ -70,26 +82,29 @@ namespace CharacterRestService.Controllers
 
         // POST /account
         [HttpPost]
-        public async Task<IActionResult> Register(Register register,
+        [AllowAnonymous]
+        public async Task<IActionResult> Register(ApiRegister register,
+            [FromServices] RoleManager<IdentityRole> roleManager,
             [FromServices] UserManager<IdentityUser> userManager)
         {
             var user = new IdentityUser(register.Username);
 
-            var result = await userManager.CreateAsync(user, register.Password);
+            IdentityResult createUserResult = await userManager.CreateAsync(user,
+                register.Password);
 
-            if (!result.Succeeded) // e.g. did not meet password policy
+            if (!createUserResult.Succeeded) // e.g. did not meet password policy
             {
-                return BadRequest(result);
+                return BadRequest(createUserResult);
             }
 
             if (register.IsAdmin)
             {
                 // make sure admin role exists
-                if (!await RoleManager.RoleExistsAsync("admin"))
+                if (!await roleManager.RoleExistsAsync("admin"))
                 {
                     var role = new IdentityRole("admin");
-                    var result2 = await RoleManager.CreateAsync(role);
-                    if (!result2.Succeeded)
+                    IdentityResult createRoleResult = await roleManager.CreateAsync(role);
+                    if (!createRoleResult.Succeeded)
                     {
                         return StatusCode(StatusCodes.Status500InternalServerError,
                             "failed to create admin role");
@@ -97,8 +112,8 @@ namespace CharacterRestService.Controllers
                 }
 
                 // add user to admin role
-                var result3 = await userManager.AddToRoleAsync(user, "admin");
-                if (!result3.Succeeded)
+                IdentityResult addRoleResult = await userManager.AddToRoleAsync(user, "admin");
+                if (!addRoleResult.Succeeded)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError,
                         "failed to add user to admin role");
@@ -108,6 +123,65 @@ namespace CharacterRestService.Controllers
             await SignInManager.SignInAsync(user, false);
 
             return NoContent(); // nothing to show the user that he can access
+        }
+
+
+        // POST /account/seed
+        [HttpPost("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Seed(
+            [FromServices] RoleManager<IdentityRole> roleManager,
+            [FromServices] UserManager<IdentityUser> userManager)
+        {
+            var nick = "nick.escalona@revature.com";
+            if (await userManager.FindByNameAsync(nick) is null)
+            {
+                var nickUser = new IdentityUser(nick);
+
+                IdentityResult result = await userManager.CreateAsync(nickUser, "password123");
+
+                if (!result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "failed to seed");
+                }
+            }
+
+            var fred = "fred@revature.com";
+            if (await userManager.FindByNameAsync(fred) is null)
+            {
+                var fredUser = new IdentityUser(fred);
+
+                IdentityResult result = await userManager.CreateAsync(fredUser, "password123");
+
+                if (!result.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "failed to seed");
+                }
+
+                // make sure admin role exists
+                if (!await roleManager.RoleExistsAsync("admin"))
+                {
+                    var role = new IdentityRole("admin");
+                    IdentityResult createRoleResult = await roleManager.CreateAsync(role);
+                    if (!createRoleResult.Succeeded)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError,
+                            "failed to seed");
+                    }
+                }
+
+                // add fred to admin role
+                IdentityResult addRoleResult = await userManager.AddToRoleAsync(fredUser, "admin");
+                if (!addRoleResult.Succeeded)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "failed to add user to admin role");
+                }
+            }
+
+            return NoContent();
         }
     }
 }

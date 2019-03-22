@@ -1,14 +1,14 @@
-﻿using System;
+﻿using CharacterMvc.ApiModels;
+using CharacterMvc.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CharacterMvc.ApiModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 
 namespace CharacterMvc.Controllers
 {
@@ -16,14 +16,24 @@ namespace CharacterMvc.Controllers
     {
         public CharacterController(HttpClient httpClient, IConfiguration configuration)
             : base(httpClient, configuration)
-        { }
+        {
+        }
 
         // GET: Character
         public async Task<ActionResult> Index()
         {
-            var request = CreateRequestToService(HttpMethod.Get, "/api/character");
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Get,
+                Configuration["ServiceEndpoints:Character"]);
 
-            var response = await HttpClient.SendAsync(request);
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return View("Error", new ErrorViewModel());
+            }
 
             if (!response.IsSuccessStatusCode)
             {
@@ -31,117 +41,218 @@ namespace CharacterMvc.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-                return View("Error");
+                return View("Error", new ErrorViewModel());
             }
-
             var jsonString = await response.Content.ReadAsStringAsync();
-
-            var characters = JsonConvert.DeserializeObject<List<ApiCharacter>>(jsonString);
+            List<ApiCharacter> characters = JsonConvert.DeserializeObject<List<ApiCharacter>>(jsonString);
 
             return View(characters);
         }
 
         // GET: Character/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
+        public async Task<ActionResult> Details(int id)
+        {
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Get,
+                $"{Configuration["ServiceEndpoints:Character"]}/{id}");
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return View("Error", new ErrorViewModel());
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                return View("Error", new ErrorViewModel());
+            }
+            var jsonString = await response.Content.ReadAsStringAsync();
+            ApiCharacter character = JsonConvert.DeserializeObject<ApiCharacter>(jsonString);
+
+            return View(character);
+        }
 
         // GET: Character/Create
         public ActionResult Create()
         {
-            if (!(AccountDetails?.Roles?.Contains("admin") ?? false))
-            {
-                // access denied
-                return View("Error");
-            }
             return View();
         }
 
         // POST: Character/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(ApiCharacter character)
+        public async Task<ActionResult> Create([Bind("Name")] ApiCharacter character)
         {
-            if (!(AccountDetails?.Roles?.Contains("admin") ?? false))
+            if (!ModelState.IsValid)
             {
-                // access denied
-                return View("Error");
-            }
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View(character);
-                }
-
-                var request = CreateRequestToService(HttpMethod.Post, "/api/character",
-                    character);
-
-                var response = await HttpClient.SendAsync(request);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    if (response.StatusCode == HttpStatusCode.Unauthorized)
-                    {
-                        return RedirectToAction("Login", "Account");
-                    }
-                    return View("Error");
-                }
-                
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                // log it
                 return View(character);
             }
+
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Post,
+                Configuration["ServiceEndpoints:Character"], character);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("", "Unexpected server error");
+                return View(character);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                ModelState.AddModelError("", "Unexpected server error");
+                return View(character);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
-        //// GET: Character/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+        // GET: Character/Edit/5
+        public async Task<ActionResult> Edit(int id)
+        {
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Get,
+                   $"{Configuration["ServiceEndpoints:Character"]}/{id}");
 
-        //// POST: Character/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("", "Unexpected server error");
+                return View();
+            }
+            if (!response.IsSuccessStatusCode)
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return RedirectToAction("Login", "Account");
+                    case HttpStatusCode.NotFound:
+                        return View("Error", new ErrorViewModel());
+                    default:
+                        ModelState.AddModelError("", "Unexpected server error");
+                        return View();
+                }
+            }
+            var jsonString = await response.Content.ReadAsStringAsync();
+            ApiCharacter character = JsonConvert.DeserializeObject<ApiCharacter>(jsonString);
 
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+            return View(character);
+        }
 
-        //// GET: Character/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
+        // POST: Character/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(int id, ApiCharacter character)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(character);
+            }
 
-        //// POST: Character/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Put,
+                $"{Configuration["ServiceEndpoints:Character"]}/{id}", character);
 
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("", "Unexpected server error");
+                return View(character);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return RedirectToAction("Login", "Account");
+                    case HttpStatusCode.NotFound:
+                        return View("Error", new ErrorViewModel());
+                    default:
+                        ModelState.AddModelError("", "Unexpected server error");
+                        return View(character);
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Character/Delete/5
+        public async Task<ActionResult> Delete(int id)
+        {
+            if (!(Account?.Roles?.Contains("admin") ?? false))
+            {
+                // access denied
+                return View("Error", new ErrorViewModel());
+            }
+            // implementation of GET Details identical
+            return await Details(id);
+        }
+
+        // POST: Character/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Delete(int id, ApiCharacter character)
+        {
+            if (!(Account?.Roles?.Contains("admin") ?? false))
+            {
+                // access denied
+                return View("Error", new ErrorViewModel());
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(character);
+            }
+
+            HttpRequestMessage request = CreateRequestToService(HttpMethod.Delete,
+                $"{Configuration["ServiceEndpoints:Character"]}/{id}");
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await HttpClient.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                ModelState.AddModelError("", "Unexpected server error");
+                return View(character);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Unauthorized:
+                        return RedirectToAction("Login", "Account");
+                    case HttpStatusCode.NotFound:
+                        return View("Error", new ErrorViewModel());
+                    default:
+                        ModelState.AddModelError("", "Unexpected server error");
+                        return View();
+                }
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

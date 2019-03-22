@@ -4,14 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CharacterRestService.Models
+namespace CharacterRestService.ApiModels
 {
-    public class Register
+    public class ApiRegister
     {
         [EmailAddress]
         public string Username { get; set; }
+
         public string Password { get; set; }
+
         public DateTimeOffset Birthday { get; set; }
+
         public bool IsAdmin { get; set; }
     }
 }

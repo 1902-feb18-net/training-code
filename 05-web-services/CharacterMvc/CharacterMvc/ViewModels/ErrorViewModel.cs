@@ -1,6 +1,4 @@
-using System;
-
-namespace CharacterMvc.Models
+namespace CharacterMvc.ViewModels
 {
     public class ErrorViewModel
     {
