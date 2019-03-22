@@ -67,7 +67,7 @@ namespace CharacterRestService
                     OnRedirectToLogin = context =>
                     {
                         // prevent redirect, just return unauthorized
-                        _logger.LogInformation("Replacing redirect to login with 401");
+                        //_logger.LogInformation("Replacing redirect to login with 401");
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.Headers.Remove("Location");
                         // we use Task.FromResult when we're in an async context
@@ -77,7 +77,7 @@ namespace CharacterRestService
                     OnRedirectToAccessDenied = context =>
                     {
                         // prevent redirect, just return forbidden
-                        _logger.LogInformation("Replacing redirect to access denied with 403");
+                        //_logger.LogInformation("Replacing redirect to access denied with 403");
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.Headers.Remove("Location");
                         return Task.FromResult(0);
