@@ -42,6 +42,7 @@ steps:
   displayName: Publish
   inputs:
     command: publish
+    publishWebProjects: false
     projects: 05-web-services/CharacterRestService/**/CharacterRestService/*.csproj
     arguments: --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
 
