@@ -6,55 +6,53 @@ pool:
   - java
 
 variables:
-  buildConfiguration: 'Release'
+  buildConfiguration: Release
 
 steps:
 - script: dotnet restore
-  workingDirectory: '05-web-services/CharacterRestService'
+  workingDirectory: 05-web-services/CharacterRestService
   displayName: Restore
 
 - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
-  displayName: Prepare Analysis on SonarCloud
+  displayName: Prepare analysis on SonarCloud
   inputs:
     SonarCloud: sonarcloud
-    organization: '1902-feb18-net'
+    organization: 1902-feb18-net
     projectKey: escalona1902charapi
     projectName: CharacterSiteAPI
 
 - script: dotnet build --configuration $(buildConfiguration) --no-restore
-  workingDirectory: '05-web-services/CharacterRestService'
+  workingDirectory: 05-web-services/CharacterRestService
   displayName: Build
 
 - task: DotNetCoreCLI@2
   displayName: Test
   inputs:
     command: test
-    projects: '05-web-services/CharacterRestService/**/*Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-    nobuild: true
+    projects: 05-web-services/CharacterRestService/**/*Tests/*.csproj
+    arguments: --configuration $(buildConfiguration) --no-build
 
 - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
-  displayName: Run Code Analysis
+  displayName: Run code analysis
 
 - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-  displayName: Publish Quality Gate Result
+  displayName: Publish quality gate result
 
 - task: DotNetCoreCLI@2
   displayName: Publish
   inputs:
     command: publish
-    publishWebProjects: false
-    projects: '05-web-services/CharacterRestService/**/CharacterRestService/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    nobuild: true
+    projects: 05-web-services/CharacterRestService/**/CharacterRestService/*.csproj
+    arguments: --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
 
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Azure App Service Deploy: escalona1902charapi'
+  displayName: 'Azure App Service deploy: escalona1902charapi'
   inputs:
-    azureSubscription: 'nick-azure'
+    azureSubscription: nick-azure
     WebAppName: escalona1902charapi
-    packageForLinux: '$(Build.ArtifactStagingDirectory)'
+    packageForLinux: $(Build.ArtifactStagingDirectory)
+    enableCustomDeployment: true
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
+  displayName: Publish artifact
