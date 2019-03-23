@@ -53,6 +53,7 @@ steps:
     WebAppName: escalona1902charapi
     packageForLinux: $(Build.ArtifactStagingDirectory)
     enableCustomDeployment: true
+    deploymentType: zipDeploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishBuildArtifacts@1
