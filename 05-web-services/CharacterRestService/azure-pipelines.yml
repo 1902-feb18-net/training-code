@@ -2,8 +2,6 @@ trigger: none
 
 pool:
   name: Default
-  demands:
-  - java
 
 variables:
   buildConfiguration: Release
@@ -47,19 +45,11 @@ steps:
   workingDirectory: 05-web-services/CharacterRestService
   displayName: Publish
 
-# - task: DotNetCoreCLI@2
-#   displayName: Publish
-#   inputs:
-#     command: publish
-#     publishWebProjects: false
-#     projects: 05-web-services/CharacterRestService/**/CharacterRestService/*.csproj
-#     arguments: --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
-
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Azure App Service deploy: escalona1902test'
+  displayName: 'Azure App Service deploy: escalona1902authapi'
   inputs:
     azureSubscription: nick-azure
-    WebAppName: escalona1902test
+    WebAppName: escalona1902authapi
     packageForLinux: $(Build.ArtifactStagingDirectory)
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
