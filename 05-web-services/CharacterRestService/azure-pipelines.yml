@@ -47,13 +47,13 @@ steps:
     arguments: --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)
 
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Azure App Service deploy: escalona1902charapi'
+  displayName: 'Azure App Service deploy: escalona1902test'
   inputs:
     azureSubscription: nick-azure
-    WebAppName: escalona1902charapi
+    WebAppName: escalona1902test
     packageForLinux: $(Build.ArtifactStagingDirectory)
-    enableCustomDeployment: true
-    deploymentType: zipDeploy
+    # enableCustomDeployment: true
+    # deploymentType: zipDeploy
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishBuildArtifacts@1
