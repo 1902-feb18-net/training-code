@@ -5,32 +5,46 @@ pool:
 
 variables:
   buildConfiguration: Release
+  solutionDir: 05-web-services/CharacterRestService
 
 steps:
 - script: dotnet restore
-  workingDirectory: 05-web-services/CharacterRestService
+  workingDirectory: $(solutionDir)
   displayName: Restore
 
 - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
-  displayName: Prepare analysis on SonarCloud
   inputs:
     SonarCloud: sonarcloud
     organization: 1902-feb18-net
     projectKey: escalona1902charapi
     projectName: CharacterSiteAPI
+    extraProperties: |
+      sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
+  displayName: Prepare analysis on SonarCloud
 
 - script: dotnet build
     --configuration $(buildConfiguration)
     --no-restore
-  workingDirectory: 05-web-services/CharacterRestService
+  workingDirectory: $(solutionDir)
   displayName: Build
 
-- task: DotNetCoreCLI@2
+- script: dotnet test **/*Test*.csproj
+    --configuration $(buildConfiguration)
+    --logger trx
+    --no-build
+    --results-directory $(Build.ArtifactStagingDirectory)/test
+    /p:CollectCoverage=true
+    /p:CoverletOutputFormat=opencover
+    /p:CoverletOutput='$(Build.ArtifactStagingDirectory)/coverage'
+  workingDirectory: $(solutionDir)
   displayName: Test
+
+- task: PublishTestResults@2
   inputs:
-    command: test
-    projects: 05-web-services/CharacterRestService/**/*Tests/*.csproj
-    arguments: --configuration $(buildConfiguration) --no-build
+    testResultsFormat: VSTest
+    testResultsFiles: '*'
+    searchFolder: $(Build.ArtifactStagingDirectory)/test
+  displayName: Publish test results
 
 - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
   displayName: Run code analysis
@@ -41,16 +55,16 @@ steps:
 - script: dotnet publish **/CharacterRestService.csproj
     --configuration $(buildConfiguration)
     --no-build
-    --output $(Build.ArtifactStagingDirectory)
-  workingDirectory: 05-web-services/CharacterRestService
+    --output $(Build.ArtifactStagingDirectory)/publish
+  workingDirectory: $(solutionDir)
   displayName: Publish
 
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Azure App Service deploy: escalona1902charapi'
+  displayName: Azure App Service deploy
   inputs:
     azureSubscription: nick-azure
     WebAppName: escalona1902charapi
-    packageForLinux: $(Build.ArtifactStagingDirectory)
+    packageForLinux: $(Build.ArtifactStagingDirectory)/publish
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
 - task: PublishBuildArtifacts@1
