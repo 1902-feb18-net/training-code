@@ -19,12 +19,12 @@ namespace CharacterRestService
 {
     public class Startup
     {
-        //private readonly ILogger _logger;
+        private readonly ILogger _logger;
 
-        public Startup(IConfiguration configuration/*, ILogger<Startup> logger*/)
+        public Startup(IConfiguration configuration, ILogger<Startup> logger)
         {
             Configuration = configuration;
-            //_logger = logger;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }
@@ -60,14 +60,14 @@ namespace CharacterRestService
             var cookieName = Configuration["AuthCookieName"];
             services.ConfigureApplicationCookie(options =>
             {
-                options.Cookie.Name = Configuration["AuthCookieName"];
+                options.Cookie.Name = cookieName;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = context =>
                     {
                         // prevent redirect, just return unauthorized
-                        //_logger.LogInformation("Replacing redirect to login with 401");
+                        _logger.LogInformation("Replacing redirect to login with 401");
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                         context.Response.Headers.Remove("Location");
                         // we use Task.FromResult when we're in an async context
@@ -77,14 +77,14 @@ namespace CharacterRestService
                     OnRedirectToAccessDenied = context =>
                     {
                         // prevent redirect, just return forbidden
-                        //_logger.LogInformation("Replacing redirect to access denied with 403");
+                        _logger.LogInformation("Replacing redirect to access denied with 403");
                         context.Response.StatusCode = StatusCodes.Status403Forbidden;
                         context.Response.Headers.Remove("Location");
                         return Task.FromResult(0);
                     }
                 };
             });
-            //_logger.LogInformation("Configured application cookie: {CookieName}", cookieName);
+            _logger.LogInformation("Configured application cookie: {CookieName}", cookieName);
 
             // enable authentication middleware
             services.AddAuthentication();
@@ -127,7 +127,7 @@ namespace CharacterRestService
             {
                 c.SwaggerEndpoint(swaggerUrl, "Character API V1");
             });
-            //_logger.LogInformation("Configured Swagger endpoint: {SwaggerEndpointUrl}", swaggerUrl);
+            _logger.LogInformation("Configured Swagger endpoint: {SwaggerEndpointUrl}", swaggerUrl);
 
             app.UseHttpsRedirection();
             app.UseMvc();
