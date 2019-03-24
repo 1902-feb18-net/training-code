@@ -20,6 +20,7 @@ steps:
     projectName: CharacterSiteAPI
     extraProperties: |
       sonar.cs.opencover.reportsPaths="$(Build.ArtifactStagingDirectory)/coverage/*"
+      sonar.cs.vstest.reportsPaths="$(Build.ArtifactStagingDirectory)/test/*"
   displayName: Prepare analysis on SonarCloud
 
 - script: dotnet build
