@@ -1,4 +1,11 @@
-trigger: none
+trigger:
+  batch: true
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - 05-web-services/CharacterRestService
 
 pool:
   name: Default
