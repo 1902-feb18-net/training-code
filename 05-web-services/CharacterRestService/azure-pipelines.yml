@@ -37,6 +37,7 @@ steps:
     /p:CollectCoverage=true
     /p:CoverletOutputFormat=opencover
     /p:CoverletOutput='$(Build.ArtifactStagingDirectory)/coverage'
+    /p:Exclude="[xunit*]*"
   workingDirectory: $(solutionDir)
   displayName: Test
 
