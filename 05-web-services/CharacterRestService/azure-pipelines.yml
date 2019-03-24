@@ -11,7 +11,7 @@ pool:
   name: Default
 
 variables:
-  buildConfiguration: Release
+  buildConfiguration: Debug
   solutionDir: 05-web-services/CharacterRestService
 
 steps:
