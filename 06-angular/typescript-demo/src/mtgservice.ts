@@ -8,7 +8,9 @@ export class MtgService {
         let url = `${this.url}${fragment}?fuzzy=${name}`;
         fetch(url)
             .then(r => r.json())
-            .then(onSuccess);
+            .then(onSuccess)
+            .catch(console.log);
+        console.log("set up fetch");
     }
 
     constructor(url: string) {
