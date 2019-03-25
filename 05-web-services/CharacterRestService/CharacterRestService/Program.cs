@@ -15,7 +15,7 @@ namespace CharacterRestService
     {
         public static void Main(string[] args)
         {
-            //// build config
+            // build config
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
                 ?? "Production";
             IConfigurationRoot configuration = new ConfigurationBuilder()
