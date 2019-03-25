@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc ./",
     "test": "echo \"All tests passed, great code\""
   },
   "author": "",
