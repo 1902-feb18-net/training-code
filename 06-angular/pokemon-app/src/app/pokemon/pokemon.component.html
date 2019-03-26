@@ -17,8 +17,12 @@
 <!-- extra field to demo the two-way binding -->
 <!-- <input type="text" [(ngModel)]="searchText" /> -->
 
-poke falsy: {{ !pokemon }}
-poke length: {{ pokemon.length }}
+<!-- <p>
+  poke falsy: {{ !pokemon }}
+</p>
+<p>
+  poke length: {{ pokemon.length }}
+</p> -->
 
 <div>
   <!-- structural directives ngIf and ngFor -->
@@ -28,7 +32,24 @@ poke length: {{ pokemon.length }}
     <!-- ngFor will repeat the element according to how many things are in -->
     <!-- what goes after "of" -->
     <li *ngFor="let p of pokemon">
-      {{ p.name }} ({{ p.height }} cm, {{ p.weight }} lb.)
+      {{ p.name }}
+      <!-- <span *ngIf="p.height && p.weight" class="smaller-text"> (regular HTML) -->
+      <!-- <span *ngIf="p.height && p.weight" [class]="heightWeightClass"> (property binding with regular attribute class) -->
+      <span *ngIf="p.height && p.weight" [ngClass]="heightWeightClasses"> <!-- property binding with ngClass attribute directive -->
+        ({{ p.height * 10 }} cm, {{ p.weight / 10 }} kg)
+      </span>
     </li>
   </ul>
+  <p *ngIf="!pokemon || pokemon.length === 0" [ngStyle]="noneFoundStyles">
+    None found!
+  </p>
+  <p *ngIf="showError" class="error-msg">{{ error }}</p>
+  <!-- "structural directives" like ngFor, ngIf, ngSwitch -->
+  <!-- are directives that can add new elements to the DOM. -->
+
+  <!-- we also have "attribute directives" which can modify the attributes -->
+  <!-- of existing elements -->
+  <!-- e.g.... ngStyle, ngClass -->
+
+  <!-- technically all components are also directives -->
 </div>
