@@ -2,6 +2,10 @@ import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
 
+// for Angular, by default, we have "Jasmine"
+// for our test library (our xUnit)
+// and "Karma" for our test runner (our VSTest / "dotnet test")
+
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({

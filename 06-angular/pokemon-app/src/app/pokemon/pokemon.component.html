@@ -1,0 +1,34 @@
+<p>
+  pokemon works!
+</p>
+
+<!-- remember we need FormsModule imported to use ngModel -->
+<div>
+  <input type="text" placeholder="Search Pokemon" required maxlength="15" [(ngModel)]="searchText" />
+</div>
+
+<div>
+  <!-- on right-hand side of event binding... -->
+  <!-- we can have arbitrary JavaScript statements -->
+  <!-- "template statement" -->
+  <button (click)="getPokemon();">Search</button>
+</div>
+
+<!-- extra field to demo the two-way binding -->
+<!-- <input type="text" [(ngModel)]="searchText" /> -->
+
+poke falsy: {{ !pokemon }}
+poke length: {{ pokemon.length }}
+
+<div>
+  <!-- structural directives ngIf and ngFor -->
+  <!-- equivalent of @if, @foreach  from Razor -->
+  <!-- ngIf: if the condition is false, this element will not be in the DOM -->
+  <ul *ngIf="pokemon && pokemon.length > 0">
+    <!-- ngFor will repeat the element according to how many things are in -->
+    <!-- what goes after "of" -->
+    <li *ngFor="let p of pokemon">
+      {{ p.name }} ({{ p.height }} cm, {{ p.weight }} lb.)
+    </li>
+  </ul>
+</div>
