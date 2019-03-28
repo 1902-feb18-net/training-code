@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  charApiUrl: 'https://escalona1902charapi.azurewebsites.net'
 };

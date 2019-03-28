@@ -25,6 +25,7 @@ namespace CharacterRestService.Controllers
 
         // GET: api/Character
         [HttpGet]
+        [AllowAnonymous]
         //[Authorize]
         //[Produces("application/xml")]
         public IEnumerable<ApiCharacter> Get()

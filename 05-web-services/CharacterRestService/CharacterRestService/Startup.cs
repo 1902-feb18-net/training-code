@@ -89,6 +89,20 @@ namespace CharacterRestService
             // enable authentication middleware
             services.AddAuthentication();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                builder =>
+                {
+                    //builder.WithOrigins("http://example.com",
+                    //                    "http://www.contoso.com");
+                    // for dev scenario, we can be pretty tolerant
+                    // in prod, we should be restrictive, we would fill in
+                    // only the origins where our Angular app was hosted.
+                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             services.AddMvc(options =>
             {
                 options.ReturnHttpNotAcceptable = true;
@@ -117,6 +131,9 @@ namespace CharacterRestService
             }
 
             app.UseAuthentication();
+
+            // have to define that policy name above
+            app.UseCors("AllowAll");
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
