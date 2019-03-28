@@ -8,6 +8,9 @@ trigger:
 
 pool: 'Default'
 
+variables:
+  appDir: 06-angular/pokemon-app
+
 steps:
 - task: NodeTool@0
   inputs:
@@ -23,6 +26,7 @@ steps:
     # certain rules in angular.json (e.g. replace environment.ts
     # with environment.prod.ts)
     npm run build --prod
+  workingDirectory: $(appDir)
   displayName: 'npm install and build'
 
 - task: AzureRmWebAppDeployment@4
@@ -30,5 +34,5 @@ steps:
   inputs:
     azureSubscription: nick-azure
     WebAppName: escalona1902pokeangular
-    packageForLinux: $(System.DefaultWorkingDirectory)/dist/pokemon-app
+    packageForLinux: $(appDir)/dist/pokemon-app
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
