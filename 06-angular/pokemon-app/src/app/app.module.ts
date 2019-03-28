@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { PokemonComponent } from './pokemon/pokemon.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CharacterComponent } from './character/character.component';
+import { LoginComponent } from './login/login.component';
 
 // decorators provide metadata that Angular needs
 // to define this class as a (ng) module.
@@ -15,7 +16,7 @@ import { CharacterComponent } from './character/character.component';
   // every component needs to be declared in one module.
   declarations: [
     AppComponent, // root component
-    PokemonComponent, CharacterComponent
+    PokemonComponent, CharacterComponent, LoginComponent
   ],
   // in "imports", we list all the other modules that we want components/directives
   // from.

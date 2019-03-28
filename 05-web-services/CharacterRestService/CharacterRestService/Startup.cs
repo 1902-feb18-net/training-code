@@ -99,7 +99,10 @@ namespace CharacterRestService
                     // for dev scenario, we can be pretty tolerant
                     // in prod, we should be restrictive, we would fill in
                     // only the origins where our Angular app was hosted.
-                    builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                    builder.WithOrigins(new[] { "http://localhost:4200" })
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 
