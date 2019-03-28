@@ -18,9 +18,9 @@ export class PokemonApiService {
 
   // this class can be repository pattern for my components
   getByName(searchText: string): Observable<Pokemon> {
-    let url = `${this.baseUrl}/${searchText}`;
+    const url = `${this.baseUrl}/${searchText}`;
     console.log(`sending request to ${url}`);
-    let response = this.httpClient.get<Pokemon>(url);
+    const response = this.httpClient.get<Pokemon>(url);
 
     // rxJS gives us a type called Observable with
     // a lot of powerful functional / asynchronous behavior
@@ -34,9 +34,9 @@ export class PokemonApiService {
   }
 
   getAll(): Observable<PokemonCollection> {
-    let url = `${this.baseUrl}`;
+    const url = `${this.baseUrl}`;
     console.log(`sending request to ${url}`);
-    let response = this.httpClient.get<PokemonCollection>(url);
+    const response = this.httpClient.get<PokemonCollection>(url);
     return response.pipe(catchError(error => {
       console.log('error:');
       console.log(error);

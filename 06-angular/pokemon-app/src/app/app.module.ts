@@ -8,6 +8,7 @@ import { PokemonComponent } from './pokemon/pokemon.component';
 import { HttpClientModule } from '@angular/common/http';
 import { CharacterComponent } from './character/character.component';
 import { LoginComponent } from './login/login.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // decorators provide metadata that Angular needs
 // to define this class as a (ng) module.
@@ -24,7 +25,8 @@ import { LoginComponent } from './login/login.component';
     BrowserModule,
     FormsModule, // for ngModel
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule
     // to access something from some third party npm package
     // (or angular's npm packages!)
     // 1. npm install <package>

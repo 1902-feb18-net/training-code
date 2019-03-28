@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       // check if user is logged in with help of session storage
-      let account = <Account>sessionStorage['account'];
+      const account = JSON.parse(sessionStorage.getItem('account')) as Account;
       if (account) {
         return true;
       }
