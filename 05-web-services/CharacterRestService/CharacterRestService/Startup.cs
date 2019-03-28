@@ -94,12 +94,14 @@ namespace CharacterRestService
                 options.AddPolicy("AllowAll",
                 builder =>
                 {
-                    //builder.WithOrigins("http://example.com",
-                    //                    "http://www.contoso.com");
                     // for dev scenario, we can be pretty tolerant
                     // in prod, we should be restrictive, we would fill in
                     // only the origins where our Angular app was hosted.
-                    builder.WithOrigins(new[] { "http://localhost:4200" })
+                    builder.WithOrigins(new[]
+                    {
+                        "http://localhost:4200",
+                        "http://escalona1902pokeangular.azurewebsites.net"
+                    })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
