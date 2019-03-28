@@ -25,7 +25,7 @@ steps:
     # build in production configuration, which activates
     # certain rules in angular.json (e.g. replace environment.ts
     # with environment.prod.ts)
-    npm run build --prod
+    npm run build-ci
   workingDirectory: $(appDir)
   displayName: 'npm install and build'
 
