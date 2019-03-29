@@ -55,6 +55,6 @@ steps:
 
 - task: PublishBuildArtifacts@1
   inputs:
-  - pathtoPublish: $(appDir)/dist/pokemon-app
-  - artifactName: app
+    pathtoPublish: $(appDir)/dist/pokemon-app
+    artifactName: app
   displayName: Publish app artifact
