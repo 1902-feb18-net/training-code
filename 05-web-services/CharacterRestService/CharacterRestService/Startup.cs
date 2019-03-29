@@ -60,9 +60,10 @@ namespace CharacterRestService
             var cookieName = Configuration["AuthCookieName"];
             services.ConfigureApplicationCookie(options =>
             {
+                options.Cookie.IsEssential = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
                 options.Cookie.Name = cookieName;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                options.Cookie.IsEssential = true;
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = context =>
