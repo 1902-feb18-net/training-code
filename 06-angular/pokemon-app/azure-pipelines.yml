@@ -28,7 +28,6 @@ steps:
     SonarCloud: sonarcloud
     organization: 1902-feb18-net
     scannerMode: CLI
-    configFile: $(appDir)/sonar-project.properties
   displayName: Prepare analysis on SonarCloud
 
 - script: npm run build-ci
