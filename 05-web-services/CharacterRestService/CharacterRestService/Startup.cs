@@ -100,7 +100,8 @@ namespace CharacterRestService
                     builder.WithOrigins(new[]
                     {
                         "http://localhost:4200",
-                        "http://escalona1902pokeangular.azurewebsites.net"
+                        "http://escalona1902pokeangular.azurewebsites.net",
+                        "https://escalona1902pokeangular.azurewebsites.net"
                     })
                         .AllowAnyHeader()
                         .AllowAnyMethod()
