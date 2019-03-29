@@ -39,10 +39,6 @@ steps:
   workingDirectory: $(appDir)
   displayName: npm run lint
 
-- script: npm run test-ci
-  workingDirectory: $(appDir)
-  displayName: npm run test-ci
-
 - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
   displayName: Run code analysis
 
@@ -60,4 +56,5 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
   - pathtoPublish: $(appDir)/dist/pokemon-app
-  displayName: Publish artifact
+  - artifactName: app
+  displayName: Publish app artifact
