@@ -62,6 +62,7 @@ namespace CharacterRestService
             {
                 options.Cookie.Name = cookieName;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                options.Cookie.IsEssential = true;
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = context =>
@@ -143,7 +144,7 @@ namespace CharacterRestService
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             var swaggerUrl = Configuration["SwaggerEndpointUrl"];
             app.UseSwaggerUI(c =>
