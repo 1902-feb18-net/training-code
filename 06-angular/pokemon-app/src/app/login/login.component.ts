@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.api.login(this.login).subscribe(() => {
+    this.api.login(this.login).then(() => {
       this.router.navigate(['/char']);
     },
     error => {
