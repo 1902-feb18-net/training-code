@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve -o",
     "build": "ng build",
-    "build-ci": "ng build --prod",
+    "build-ci": "ng build --prod=true --progress=false",
     "test": "ng test",
-    "test-coverage": "ng test --no-watch --code-coverage",
+    "test-ci": "ng test --codeCoverage=true --progress=false --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
