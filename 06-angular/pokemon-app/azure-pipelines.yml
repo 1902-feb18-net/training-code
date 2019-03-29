@@ -27,8 +27,7 @@ steps:
   inputs:
     SonarCloud: sonarcloud
     organization: 1902-feb18-net
-    projectKey: escalona1902pokeangular
-    projectName: PokeCharApp
+    scannerMode: CLI
   displayName: Prepare analysis on SonarCloud
 
 - script: npm run build-ci
