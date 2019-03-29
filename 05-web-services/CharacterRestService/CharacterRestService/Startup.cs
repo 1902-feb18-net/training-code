@@ -61,7 +61,6 @@ namespace CharacterRestService
             services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.IsEssential = true;
-                options.Cookie.HttpOnly = false;
                 options.Cookie.Name = cookieName;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                 options.Events = new CookieAuthenticationEvents

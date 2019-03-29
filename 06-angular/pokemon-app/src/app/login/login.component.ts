@@ -21,6 +21,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.login.rememberMe = true;
     this.api.login(this.login).then(() => {
       this.router.navigate(['/char']);
     },

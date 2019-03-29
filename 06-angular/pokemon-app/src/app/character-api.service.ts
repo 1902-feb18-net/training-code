@@ -5,7 +5,6 @@ import { Character } from './models/character';
 import { Observable } from 'rxjs';
 import { Login } from './models/login';
 import { Account } from './models/account';
-import { mergeMap, concatMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
